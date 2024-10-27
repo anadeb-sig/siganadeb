@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use App\Models\Beneficiaire;
 use DB;
 use App\Models\Contrat;
-use App\Models\Site;
+use App\Models\Ouvrage;
 use App\Models\Demande;
 
 class AutomatiserController extends Controller
@@ -32,7 +32,7 @@ class AutomatiserController extends Controller
         ini_set('max_execution_time', 0); // 5 minutes
 
         DB::insert("
-            INSERT INTO etatpaiements (id,telephone,type_card,mobile_money,card_number,nom,prenom,sexe,tm,mie,financement,village_id, nbr, SommeSucces, nombre_succes,SommeTM,SommeMIE, SommePending, nombre_pending, SommeCancel, nombre_Cancel, nombre_Fail)
+            INSERT INTO etatpaiements (id,telephone,type_card,mobile_money,card_number,nom,prenom,sexe,tm,mie,financement,village_id, nbr, SommeSucces, nombre_succes,SommeTM,SommeMIE, SommePending, nombre_pending, SommeCancel, nombre_Cancel, SommeFail, nombre_Fail)
                 SELECT 
                     b.id,
                     b.telephone,
@@ -70,6 +70,7 @@ class AutomatiserController extends Controller
                 SUM(CASE WHEN p.status = 'PendingAccount' THEN 1 ELSE 0 END) AS nombre_pending,
                 SUM(CASE WHEN p.status = 'Canceled' THEN p.montant ELSE 0 END) AS SommeCancel,
                 SUM(CASE WHEN p.status = 'Canceled' THEN 1 ELSE 0 END) AS nombre_Cancel,
+                SUM(CASE WHEN p.status = 'Fail' THEN p.montant ELSE 0 END) AS SommeFail,
                 SUM(CASE WHEN p.status = 'Fail' THEN 1 ELSE 0 END) AS nombre_Fail
                 FROM paiements p
                 INNER JOIN beneficiaires b ON b.id = p.id
@@ -422,8 +423,7 @@ class AutomatiserController extends Controller
                             ->first();
 
         if($contrat) {
-            $demande = Demande::join('sites', 'demandes.site_id', '=', 'sites.id')
-                        ->join('ouvrages', 'sites.id', '=', 'ouvrages.site_id')
+            $demande = Demande::join('ouvrages', 'demandes.ouvrage_id', '=', 'ouvrages.id')
                         ->join('signers', 'ouvrages.id', '=', 'signers.ouvrage_id')
                         ->join('contrats', 'contrats.id', '=', 'signers.contrat_id')
                         ->select('contrats.id', 'demandes.date_debut_old', 'demandes.date_fin_old', 'demandes.nbJr')
@@ -442,10 +442,12 @@ class AutomatiserController extends Controller
                     $contratToUpdate->statu = "NON_SUSPENDU";  // Mettre à jour la nouvelle date
                     $contratToUpdate->save();  // Sauvegarder les changements dans la base de données
                 }
+
+
             // Mettre à jour le statut des sites correspondants
-            DB::table('sites')
+            DB::table('ouvrages')
             ->whereIn('id', function ($query) use ($contrat) {
-                $query->select('ouvrages.site_id')
+                $query->select('ouvrages.id')
                     ->from('signers')
                     ->join('ouvrages', 'signers.ouvrage_id', '=', 'ouvrages.id')
                     ->join('contrats', 'signers.contrat_id', '=', 'contrats.id')
@@ -456,26 +458,22 @@ class AutomatiserController extends Controller
         
     }
 
-    public function etat_site(){
+    public function etat_ouvrage(){
 
         $demande = Demande::where('date_debut_susp', '<=', now())
                             ->where('statu','=', 'Approuvé')
                             ->first();
-        
-        // $contrat = Contrat::where('statu','=', 'SUSPENDU')
-        //                     ->first();
 
         if($demande){
             // Mettre à jour le statut des sites correspondants
-            $site = Site::findOrFail($demande->site_id);
+            $site = Ouvrage::findOrFail($demande->ouvrage_id);
             $site->statu = "SUSPENDU";
             $site->save();
 
             // Récupérer les contrats associés
             $contrats = Contrat::join('signers', 'contrats.id', '=', 'signers.contrat_id')
                 ->join('ouvrages', 'ouvrages.id', '=', 'signers.ouvrage_id')
-                ->join('sites', 'ouvrages.site_id', '=', 'sites.id')
-                ->where('sites.id', $demande->site_id)
+                ->where('ouvrages.id', $demande->ouvrage_id)
                 ->select('contrats.id')
                 ->get();
 

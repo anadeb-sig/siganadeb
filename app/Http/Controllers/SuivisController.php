@@ -40,7 +40,7 @@ class SuivisController extends Controller
     }
 
     public function fetch(Request $request){
-        $perPage = 60;
+        $perPage = 30;
 
         $nom_reg = $request->nom_reg;
         $nom_comm = $request->nom_comm;

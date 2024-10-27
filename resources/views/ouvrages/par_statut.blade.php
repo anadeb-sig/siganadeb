@@ -5,9 +5,6 @@
             <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
                 <h1 class="h3 mb-0 text-gray-800">Liste des ouvrages</h1>
                 <div class="d-flex align-items-center">
-                    @if (request()->is('ouvrages/statut/*'))
-                        <input type="hidden" id="statu_ouvrage" value="{{ $statu }}">
-                    @endif
                     <button class="btn btn-outline-teal mr-2 btnform" type="button" id="telecharger_ouvrage">
                         <i class="fas fa-file-export"></i> &nbsp;Format en csv
                     </button>

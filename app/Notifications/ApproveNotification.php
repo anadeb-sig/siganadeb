@@ -12,12 +12,12 @@ class ApproveNotification extends Notification implements ShouldQueue
     use Queueable;
 
     protected $details;
-    protected $sites;
+    protected $ouvrages;
 
-    public function __construct($details, $sites)
+    public function __construct($details, $ouvrages)
     {
         $this->details = $details;
-        $this->sites = $sites;
+        $this->ouvrages = $ouvrages;
     }
 
     public function via($notifiable)
@@ -30,7 +30,7 @@ class ApproveNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Demande d\'approbation')
             ->line('Vous avez une nouvelle demande d\'approbation.')
-            ->action('Voir la demande', url('demandes/detail/' . $this->details['id'] . '/'. $this->sites['site_id'] ))
+            ->action('Voir la demande', url('demandes/detail/' . $this->details['id'] . '/'. $this->ouvrages['ouvrage_id'] ))
             ->line('Merci d\'utiliser notre application!');
     }
 

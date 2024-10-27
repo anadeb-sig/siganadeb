@@ -438,128 +438,128 @@ function rendtableau_paiement_village(nom_reg, nom_pref, nom_comm, nom_cant, nom
             console.error("L'élément avec l'ID 'table_etatpaiements' est introuvable.");
         }
 
-        let excelButton = document.getElementById('excelButton');
-        if (excelButton) {
-        // Fonction de génération Excel au clic
-        excelButton.addEventListener('click', () => {
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet([
-                [
-                    "Région",
-                    "Préfecture",
-                    "Commune",
-                    "Canton",
-                    "Village",
-                    "Financement",
-                    "Nombre de bénéficiaires payés Tranche 1","Effectif Femmes payées Tranche 1","Effectif Hommes payés Tranche 1","Date de paiement Tranche 1",
-                    "Date prévue paiement Tranche 1","Ressources transférées aux bénéficiaires Tranche 1","Total frais de retrait Tranche 1","Frais de retrait Flooz Tranche 1","Frais de retrait Tmoney Tranche 1","Effectif payé par Flooz Tranche 1","Effectif payé par Tmoney Tranche 1","Commentaires 1","Nombre de bénéficiaires payés Tranche 2","Effectif Femmes payées Tranche 2","Effectif Hommes payés Tranche 2","Date de paiement Tranche 2",
-                    "Date prévue paiement Tranche 2","Ressources transférées aux bénéficiaires Tranche 2","Total frais de retrait Tranche 2","Frais de retrait Flooz Tranche 2","Frais de retrait Tmoney Tranche 2","Effectif payé par Flooz Tranche 2","Effectif payé par Tmoney Tranche 2","Commentaires 2","Nombre de bénéficiaires payés Tranche 3","Effectif Femmes payées Tranche 3","Effectif Hommes payés Tranche 3","Date de paiement Tranche 3",
-                    "Date prévue paiement Tranche 3","Ressources transférées aux bénéficiaires Tranche 3","Total frais de retrait Tranche 3","Frais de retrait Flooz Tranche 3","Frais de retrait Tmoney Tranche 3","Effectif payé par Flooz Tranche 3","Effectif payé par Tmoney Tranche 3","Commentaires 3","Nombre de bénéficiaires payés Tranche 4","Effectif Femmes payées Tranche 4","Effectif Hommes payés Tranche 4","Date de paiement Tranche 4",
-                    "Date prévue paiement Tranche 4","Ressources transférées aux bénéficiaires Tranche 4","Total frais de retrait Tranche 4","Frais de retrait Flooz Tranche 4","Frais de retrait Tmoney Tranche 4","Effectif payé par Flooz Tranche 4","Effectif payé par Tmoney Tranche 4","Commentaires 4","Nombre de bénéficiaires payés Tranche 5","Effectif Femmes payées Tranche 5","Effectif Hommes payés Tranche 5","Date de paiement Tranche 5",
-                    "Date prévue paiement Tranche 5","Ressources transférées aux bénéficiaires Tranche 5","Total frais de retrait Tranche 5","Frais de retrait Flooz Tranche 5","Frais de retrait Tmoney Tranche 5","Effectif payé par Flooz Tranche 5","Effectif payé par Tmoney Tranche 5","Commentaires 5","Nombre de bénéficiaires payés Tranche 6","Effectif Femmes payées Tranche 6","Effectif Hommes payés Tranche 6","Date de paiement Tranche 6",
-                    "Date prévue paiement Tranche 6","Ressources transférées aux bénéficiaires Tranche 6","Total frais de retrait Tranche 6","Frais de retrait Flooz Tranche 6","Frais de retrait Tmoney Tranche 6","Effectif payé par Flooz Tranche 6","Effectif payé par Tmoney Tranche 6","Commentaires 6",
-                ],  // En-têtes
-            ...data.data.map(item => [
-                item.reg,
-                item.pref,
-                item.comm,
-                item.cant,
-                item.vill,
-                item.financement,
+        // let excelButton = document.getElementById('excelButton');
+        // if (excelButton) {
+        // // Fonction de génération Excel au clic
+        // excelButton.addEventListener('click', () => {
+        //     const wb = XLSX.utils.book_new();
+        //     const ws = XLSX.utils.aoa_to_sheet([
+        //         [
+        //             "Région",
+        //             "Préfecture",
+        //             "Commune",
+        //             "Canton",
+        //             "Village",
+        //             "Financement",
+        //             "Nombre de bénéficiaires payés Tranche 1","Effectif Femmes payées Tranche 1","Effectif Hommes payés Tranche 1","Date de paiement Tranche 1",
+        //             "Date prévue paiement Tranche 1","Ressources transférées aux bénéficiaires Tranche 1","Total frais de retrait Tranche 1","Frais de retrait Flooz Tranche 1","Frais de retrait Tmoney Tranche 1","Effectif payé par Flooz Tranche 1","Effectif payé par Tmoney Tranche 1","Commentaires 1","Nombre de bénéficiaires payés Tranche 2","Effectif Femmes payées Tranche 2","Effectif Hommes payés Tranche 2","Date de paiement Tranche 2",
+        //             "Date prévue paiement Tranche 2","Ressources transférées aux bénéficiaires Tranche 2","Total frais de retrait Tranche 2","Frais de retrait Flooz Tranche 2","Frais de retrait Tmoney Tranche 2","Effectif payé par Flooz Tranche 2","Effectif payé par Tmoney Tranche 2","Commentaires 2","Nombre de bénéficiaires payés Tranche 3","Effectif Femmes payées Tranche 3","Effectif Hommes payés Tranche 3","Date de paiement Tranche 3",
+        //             "Date prévue paiement Tranche 3","Ressources transférées aux bénéficiaires Tranche 3","Total frais de retrait Tranche 3","Frais de retrait Flooz Tranche 3","Frais de retrait Tmoney Tranche 3","Effectif payé par Flooz Tranche 3","Effectif payé par Tmoney Tranche 3","Commentaires 3","Nombre de bénéficiaires payés Tranche 4","Effectif Femmes payées Tranche 4","Effectif Hommes payés Tranche 4","Date de paiement Tranche 4",
+        //             "Date prévue paiement Tranche 4","Ressources transférées aux bénéficiaires Tranche 4","Total frais de retrait Tranche 4","Frais de retrait Flooz Tranche 4","Frais de retrait Tmoney Tranche 4","Effectif payé par Flooz Tranche 4","Effectif payé par Tmoney Tranche 4","Commentaires 4","Nombre de bénéficiaires payés Tranche 5","Effectif Femmes payées Tranche 5","Effectif Hommes payés Tranche 5","Date de paiement Tranche 5",
+        //             "Date prévue paiement Tranche 5","Ressources transférées aux bénéficiaires Tranche 5","Total frais de retrait Tranche 5","Frais de retrait Flooz Tranche 5","Frais de retrait Tmoney Tranche 5","Effectif payé par Flooz Tranche 5","Effectif payé par Tmoney Tranche 5","Commentaires 5","Nombre de bénéficiaires payés Tranche 6","Effectif Femmes payées Tranche 6","Effectif Hommes payés Tranche 6","Date de paiement Tranche 6",
+        //             "Date prévue paiement Tranche 6","Ressources transférées aux bénéficiaires Tranche 6","Total frais de retrait Tranche 6","Frais de retrait Flooz Tranche 6","Frais de retrait Tmoney Tranche 6","Effectif payé par Flooz Tranche 6","Effectif payé par Tmoney Tranche 6","Commentaires 6",
+        //         ],  // En-têtes
+        //     ...data.data.map(item => [
+        //         item.reg,
+        //         item.pref,
+        //         item.comm,
+        //         item.cant,
+        //         item.vill,
+        //         item.financement,
 
-                item.nbr1,
-                item.effectFem1,
-                item.effectHom1,
-                item.date1,
-                item.datePrevu1,
-                item.ressources1,
-                item.totalFrais1,
-                item.fraisFlooz1,
-                item.fraisTmoney1,
-                item.effectifPayeFlooz1,
-                item.effectifPayeTmoney1,
-                item.comment1,
+        //         item.nbr1,
+        //         item.effectFem1,
+        //         item.effectHom1,
+        //         item.date1,
+        //         item.datePrevu1,
+        //         item.ressources1,
+        //         item.totalFrais1,
+        //         item.fraisFlooz1,
+        //         item.fraisTmoney1,
+        //         item.effectifPayeFlooz1,
+        //         item.effectifPayeTmoney1,
+        //         item.comment1,
 
-                item.nbr2,
-                item.effectFem2,
-                item.effectHom2,
-                item.date2,
-                item.datePrevu2,
-                item.ressources2,
-                item.totalFrais2,
-                item.fraisFlooz2,
-                item.fraisTmoney2,
-                item.effectifPayeFlooz2,
-                item.effectifPayeTmoney2,
-                item.comment2,
+        //         item.nbr2,
+        //         item.effectFem2,
+        //         item.effectHom2,
+        //         item.date2,
+        //         item.datePrevu2,
+        //         item.ressources2,
+        //         item.totalFrais2,
+        //         item.fraisFlooz2,
+        //         item.fraisTmoney2,
+        //         item.effectifPayeFlooz2,
+        //         item.effectifPayeTmoney2,
+        //         item.comment2,
 
-                item.nbr3,
-                item.effectFem3,
-                item.effectHom3,
-                item.date3,
-                item.datePrevu3,
-                item.ressources3,
-                item.totalFrais3,
-                item.fraisFlooz3,
-                item.fraisTmoney3,
-                item.effectifPayeFlooz3,
-                item.effectifPayeTmoney3,
-                item.comment3,
+        //         item.nbr3,
+        //         item.effectFem3,
+        //         item.effectHom3,
+        //         item.date3,
+        //         item.datePrevu3,
+        //         item.ressources3,
+        //         item.totalFrais3,
+        //         item.fraisFlooz3,
+        //         item.fraisTmoney3,
+        //         item.effectifPayeFlooz3,
+        //         item.effectifPayeTmoney3,
+        //         item.comment3,
 
-                item.nbr4,
-                item.effectFem4,
-                item.effectHom4,
-                item.date4,
-                item.datePrevu4,
-                item.ressources4,
-                item.totalFrais4,
-                item.fraisFlooz4,
-                item.fraisTmoney4,
-                item.effectifPayeFlooz4,
-                item.effectifPayeTmoney4,
-                item.comment4,
+        //         item.nbr4,
+        //         item.effectFem4,
+        //         item.effectHom4,
+        //         item.date4,
+        //         item.datePrevu4,
+        //         item.ressources4,
+        //         item.totalFrais4,
+        //         item.fraisFlooz4,
+        //         item.fraisTmoney4,
+        //         item.effectifPayeFlooz4,
+        //         item.effectifPayeTmoney4,
+        //         item.comment4,
 
-                item.nbr5,
-                item.effectFem5,
-                item.effectHom5,
-                item.date5,
-                item.datePrevu5,
-                item.ressources5,
-                item.totalFrais5,
-                item.fraisFlooz5,
-                item.fraisTmoney5,
-                item.effectifPayeFlooz5,
-                item.effectifPayeTmoney5,
-                item.comment5,
+        //         item.nbr5,
+        //         item.effectFem5,
+        //         item.effectHom5,
+        //         item.date5,
+        //         item.datePrevu5,
+        //         item.ressources5,
+        //         item.totalFrais5,
+        //         item.fraisFlooz5,
+        //         item.fraisTmoney5,
+        //         item.effectifPayeFlooz5,
+        //         item.effectifPayeTmoney5,
+        //         item.comment5,
 
-                item.nbr6,
-                item.effectFem6,
-                item.effectHom6,
-                item.date6,
-                item.datePrevu6,
-                item.ressources6,
-                item.totalFrais6,
-                item.fraisFlooz6,
-                item.fraisTmoney6,
-                item.effectifPayeFlooz6,
-                item.effectifPayeTmoney6,
-                item.comment6,
-            ])
-            ]);
+        //         item.nbr6,
+        //         item.effectFem6,
+        //         item.effectHom6,
+        //         item.date6,
+        //         item.datePrevu6,
+        //         item.ressources6,
+        //         item.totalFrais6,
+        //         item.fraisFlooz6,
+        //         item.fraisTmoney6,
+        //         item.effectifPayeFlooz6,
+        //         item.effectifPayeTmoney6,
+        //         item.comment6,
+        //     ])
+        //     ]);
             
-            XLSX.utils.book_append_sheet(wb, ws, 'etatpaiement');
+        //     XLSX.utils.book_append_sheet(wb, ws, 'etatpaiement');
 
-            // Obtenir la date actuelle
-            let today = new Date();
-            let yyyy = today.getFullYear();
-            let mm = String(today.getMonth() + 1).padStart(2, '0'); // Mois de 0 à 11
-            let dd = String(today.getDate()).padStart(2, '0'); // Jours
+        //     // Obtenir la date actuelle
+        //     let today = new Date();
+        //     let yyyy = today.getFullYear();
+        //     let mm = String(today.getMonth() + 1).padStart(2, '0'); // Mois de 0 à 11
+        //     let dd = String(today.getDate()).padStart(2, '0'); // Jours
 
-            // Créer le nom du fichier au format aaaa-mm-jj
-            let filename = yyyy + '_' + mm + '_' + dd + '_etatpaiement_par_village.xlsx';
-            XLSX.writeFile(wb, filename);
-        });
-        }
+        //     // Créer le nom du fichier au format aaaa-mm-jj
+        //     let filename = yyyy + '_' + mm + '_' + dd + '_etatpaiement_par_village.xlsx';
+        //     XLSX.writeFile(wb, filename);
+        // });
+        // }
     });
 }
 

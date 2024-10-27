@@ -9,37 +9,37 @@
                 <div class="card-header">Information sur le contrat</div>
                 <div class="list-group list-group-flush small">
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Code : {{ $site->code }}
+                        Code : {{ $ouvrage->code }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Date signature : {{ $site->date_sign }}
+                        Date signature : {{ $ouvrage->date_sign }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Date demarrage des travaux : {{ $site->date_debut }}
+                        Date demarrage des travaux : {{ $ouvrage->date_debut }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Date fin des travaux : {{ $site->date_fin }}
+                        Date fin des travaux : {{ $ouvrage->date_fin }}
                     </a>
                 </div>
                 <div class="card-header">Information sur l'entreprise</div>
                 <div class="list-group list-group-flush small">
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Entreprise : {{ $site->nom_entrep }}
+                        Entreprise : {{ $ouvrage->nom_entrep }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Numro NIF : {{ $site->num_id_f }}
+                        Numro NIF : {{ $ouvrage->num_id_f }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Nom du charger : {{ $site->nom_charge }}   {{ $site->prenom_charge }}
+                        Nom du charger : {{ $ouvrage->nom_charge }}   {{ $ouvrage->prenom_charge }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Email : {{ $site->email }}
+                        Email : {{ $ouvrage->email }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Tléphone : {{ $site->tel }}
+                        Tléphone : {{ $ouvrage->tel }}
                     </a>
                     <a class="list-group-item list-group-item-action" href="#!">
-                        Adresse : {{ $site->addr }}
+                        Adresse : {{ $ouvrage->addr }}
                     </a>
                 </div>
                 <div class="card-header">Information sur la localisation gographique</div>

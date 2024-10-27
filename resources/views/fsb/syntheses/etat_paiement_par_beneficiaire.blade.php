@@ -12,7 +12,7 @@
             <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
                 <h1 class="h3 mb-0 text-gray-800">Synthèse de paiements par bénéficiaire</h1>
                 <div class="file-export">
-                    <button class="btn btn-outline-cyan btnform" id="excelButton">
+                    <button class="btn btn-outline-cyan btnform" onclick="fetchAllDataForExport()">
                         <i class="fas fa-file-export"></i> &nbsp;Export
                     </button>
                 </div>
@@ -137,5 +137,67 @@
 
             rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum);
         } 
+    </script>
+
+    <script>
+        function fetchAllDataForExport() {
+            // Récupération des valeurs des filtres
+            let nom_reg = document.getElementById('nom_reg').value;
+                let nom_pref = document.getElementById('nom_pref').value;
+                let nom_comm = document.getElementById('nom_comm').value;
+                let nom_cant = document.getElementById('nom_cant').value;
+                let nom_vill = document.getElementById('nom_vill').value;
+                let financement = document.getElementById('financement').value;
+                let nom = document.getElementById('nom').value;
+                let prenom = document.getElementById('prenom').value;
+                let telephone = document.getElementById('telephone').value;
+                let cardNum = document.getElementById('cardNum').value;
+
+            // Appel à l'API pour récupérer les données
+            fetch(`/fsb_syntheses/fetch_beneficiaire?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_vill=${nom_vill}&financement=${financement}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&cardNum=${cardNum}&export=true`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.data.length); // Affiche les données brutes
+                    if (data && data.data) {
+                        exporterVersExcel(data.data); // Exporter toutes les données récupérées
+                    } else {
+                        console.warn("Aucune donnée à exporter ou data.data n'est pas défini.");
+                    }
+                })
+                .catch(error => console.error('Erreur de récupération des données:', error));
+        }
+
+        // Fonction d'exportation vers Excel
+        function exporterVersExcel(data) {
+            if (!data || data.length === 0) {
+                console.warn("Aucune donnée à exporter.");
+                return;
+            }
+
+            // Créer un nouveau classeur (workbook)
+            const workbook = XLSX.utils.book_new();
+            
+            // Convertir les données JSON en une feuille de calcul (worksheet)
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            
+            // Ajouter la feuille de calcul au classeur
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Données');
+            
+            // Obtenir la date actuelle pour le nom du fichier
+            let today = new Date();
+            let yyyy = today.getFullYear();
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let dd = String(today.getDate()).padStart(2, '0');
+            let filename = `${yyyy}_${mm}_${dd}_etatpaiement_par_bd.xlsx`;
+
+            // Exporter le classeur en fichier Excel
+            XLSX.writeFile(workbook, filename);
+        }
+
     </script>
 @endsection

@@ -57,14 +57,13 @@ class SiteController extends Controller
         $nom_comm = $request->nom_comm;
         $nom_cant = $request->nom_cant;
         $nom_site = $request->nom_site;
-        $statu = $request->statu;
 
         $sites = Site::join('villages', 'villages.id', '=', 'sites.village_id' )
                     ->join('cantons', 'cantons.id', '=', 'villages.canton_id')
                     ->join('communes', 'communes.id', '=', 'cantons.commune_id')
                     ->join('prefectures', 'prefectures.id', '=', 'communes.prefecture_id')
                     ->join('regions', 'regions.id', '=', 'prefectures.region_id')
-                    ->select('nom_reg','nom_pref','nom_comm', 'nom_cant','nom_vill','sites.nom_site', 'sites.descrip_site','sites.id','sites.statu','budget')
+                    ->select('nom_reg','nom_pref','nom_comm', 'nom_cant','nom_vill','sites.nom_site', 'sites.descrip_site','sites.id','budget')
                     ->when($nom_reg, function ($query, $nom_reg) {
                         return $query->where('regions.nom_reg', 'like', "%$nom_reg%");
                     })->when($nom_comm, function ($query, $nom_comm) {
@@ -73,8 +72,6 @@ class SiteController extends Controller
                         return $query->where('cantons.nom_cant', 'like', "%$nom_cant%");
                     })->when($nom_site, function ($query, $nom_site) {
                         return $query->where('sites.nom_site', 'like', "%$nom_site%");
-                    })->when($statu, function ($query, $statu) {
-                        return $query->where('sites.statu', 'like', "%$statu%");
                     })->orderByDesc('sites.created_at')
                     ->get();
 
@@ -114,6 +111,7 @@ class SiteController extends Controller
                     $dataa['financement_id'] = $request->financement_id[$i];
                     $dataa['typeouvrage_id'] = $request->typeouvrage_id[$i];
                     $dataa['projet_id'] = $request->projet_id[$i];
+                    $dataa['statu'] ="NON_DEMARRE";
     
                     Ouvrage::create($dataa);
                 }
@@ -299,34 +297,6 @@ class SiteController extends Controller
         return response()->json($verification);
     }
 
-    //Modification du status du site
-    public function updateStatus($id, $statu)
-    {
-        // Validation
-        $validate = Validator::make([
-            'id'   => $id,
-            'statu'    => $statu
-        ], [
-            'id'   =>  'required|exists:sites,id',
-            'statu'    =>  'required',
-        ]);
-
-        // If Validations Fails
-        if($validate->fails()){
-            return redirect()->route('site.index')->with('error', $validate->errors()->first());
-        }else{
-
-            DB::beginTransaction();
-
-            // Update Status
-            Site::whereId($id)->update(['statu' => $statu]);
-
-            // Commit And Redirect on index with Success Message
-            DB::commit();
-            return redirect()->route('sites.index')->with('success_message','Status du site modifié avec succès!');
-        }
-    }
-
     //Liste des ouvrages signés par commune
     public function ouvcontrat_sign($id)
     {
@@ -475,8 +445,7 @@ class SiteController extends Controller
                             "nom_site" => $details[5],
                             "descrip_site" => $details[6],
                             "budget" => $details[7],
-                            "village_id" => $value->id,
-                            "statu" => "CONTRAT_NON_SIGNE"
+                            "village_id" => $value->id
                         ];
                     }
                     $lignes_excel[] = $lignes;
@@ -493,8 +462,7 @@ class SiteController extends Controller
                     'village_id' => $value["village_id"],
                     'nom_site' => $value["nom_site"],
                     "descrip_site" => $value["descrip_site"],
-                    "budget" => $value["budget"],
-                    "statu" => $value["statu"]
+                    "budget" => $value["budget"]
                 ]);
 
                 if ($insertedId) {

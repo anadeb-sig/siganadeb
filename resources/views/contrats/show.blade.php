@@ -27,24 +27,6 @@
                         Date fin des travaux : {{ $signer->date_fin }}
                     </a>
                 </div>
-                <div class="card-header">Information sur la localisation gographique</div>
-                <div class="list-group list-group-flush small">
-                    <a class="list-group-item list-group-item-action" href="#!">
-                        Village : {{ $signer->nom_vill }}
-                    </a>
-                    <a class="list-group-item list-group-item-action" href="#!">
-                        Canton : {{ $signer->nom_cant }}
-                    </a>
-                    <a class="list-group-item list-group-item-action" href="#!">
-                        Commune : {{ $signer->nom_comm }}
-                    </a>
-                    <a class="list-group-item list-group-item-action" href="#!">
-                        Préfecture : {{ $signer->nom_pref }}
-                    </a>
-                    <a class="list-group-item list-group-item-action" href="#!">
-                        Région : {{ $signer->nom_reg }}
-                    </a>
-                </div>
             </div>
         </div>
         <div class="col-lg-9 mb-4">
@@ -68,7 +50,9 @@
                                 <!-- Invoice item 1-->
                                 @foreach($info as $info)
                                     <tr class="border-bottom">
-                                        <td class="fw-bold">{{ $info->nom_site }}</td>
+                                        <td class="fw-bold">
+                                            <a href="javascript:void(0);" id='show_site' data-url='/sites/show/{{ $info->ouvrage->site->id }}' data-id='{{ $info->ouvrage->site->id }}'>{{ $info->nom_site }}</a>
+                                        </td>
                                         <td>
                                             <div class="fw-bold">{{ $info->nom_ouvrage }}</div>
                                             <div class="small text-muted d-none d-md-block" style="font-size: 0.6em;">{{ $info->descrip }}</div>
@@ -92,4 +76,29 @@
             </div>
         </div>
     </div>
+
+
+    @include('sites.show')
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('body').on('click', '#show_site', function(){
+                var url = $(this).data('url');
+                var id = $(this).data('id');
+                $.get(url, function(data){
+                    $('.modal-title').text('Détail du site n°'+id);
+                    $('.show_site_modal').modal('show');
+                        $('#show_id').text(data.id);
+                        $('#show_nom_site').text(data.nom_site);
+                        $('#show_nom_vill').text(data.nom_vill);                    
+                        $('#show_nom_cant').text(data.nom_cant);                    
+                        $('#show_nom_comm').text(data.nom_comm);                   
+                        $('#show_descrip_site').text(data.descrip_site);                    
+                        $('#show_budget').text(data.budget);
+                        $('#show_nom_pref').text(data.nom_pref);
+                        $('#show_nom_reg').text(data.nom_reg);
+                })
+            });
+        });
+    </script>
 @endsection

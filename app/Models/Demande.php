@@ -12,7 +12,7 @@ class Demande extends Model
 
     protected $fillable = [
         'statu',
-        'site_id',
+        'ouvrage_id',
         'description',
         'date_debut_old',
         'date_fin_old',

@@ -65,19 +65,6 @@
                                         <label for="nom_site" class="control-label">Site d'ouvrage</label>
                                         <input class="form-control w-100" id="nom_site" name="nom_site" type="text" placeholder="exemple: ....." />
                                     </div>
-                                    <div class="col-xl-4 {{ $errors->has('nom_pr') ? 'has-error' : '' }}">
-                                        <label for="statu" class="control-label">Status</label>
-                                        <select class="form-control" id="statu" name="statu">
-                                            <option value="" style="display: none;" disabled selected>Selectionner le status</option>
-                                            <option value="NON_DEMARRE">NON DEMARRE</option>
-                                            <option value="EC">EN COURS</option>
-                                            <option value="RT">RECEPTION TECHNIQUE</option>
-                                            <option value="RP">RECEPTION PROVISOIRE</option>
-                                            <option value="RD">RECEPTION DEFINITIVE</option>
-                                            <option value="SUSPENDU">SUSPENDU</option>
-                                            <option value="CONTRAT_NON_SIGNE">CONTRAT NON SIGNE</option>
-                                        </select>
-                                    </div>
                                     <div class="col-xl-4 modal-footer mt-4">
                                         <a href="{{ route('sites.index') }}" type="button" class="btn btn-outline-danger">
                                             <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
@@ -107,7 +94,6 @@
     @include('sites.edit')
     @include('sites.delete')
     @include('sites.crud')
-    @include('sites.demande_suspension')
     @include('sites.telecharger_site')
 
 
@@ -195,9 +181,8 @@
                 let nom_comm = document.getElementById('nom_comm').value;
                 let nom_cant = document.getElementById('nom_cant').value;
                 let nom_site = document.getElementById('nom_site').value;
-                let statu = document.getElementById('statu').value;
 
-                rendtableau_site(nom_reg, nom_comm, nom_cant,nom_site,statu);
+                rendtableau_site(nom_reg, nom_comm, nom_cant,nom_site);
                 
             });
         });
@@ -207,8 +192,7 @@
             let nom_comm = "";
             let nom_cant = "";
             let nom_site = "";
-            let statu = "";
-            rendtableau_site(nom_reg, nom_comm, nom_cant,nom_site,statu);
+            rendtableau_site(nom_reg, nom_comm, nom_cant,nom_site);
         }        
     </script>
 

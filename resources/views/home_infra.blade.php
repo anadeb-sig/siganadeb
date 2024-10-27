@@ -79,9 +79,8 @@
                                     <b class="">Réception définitive</b>
                                 </div>
                                 <div class="card-body">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title text-center h2  fw-bold">{{ $site_sta->nbr_RT }}</h5>
-                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                  <div class="text-center">
+                                    <h5 class="h2  fw-bold">@if( $site_sta->nbr_RD > 0)<a href="{{ route('ouvrages.statut', ['statu' => 'RT']) }}">{{ $site_sta->nbr_RD  }}</a>@else 0 @endif</h5>                                    
                                   </div>
                                 </div>
                             </div>
@@ -92,9 +91,8 @@
                                     <b class="">Réception provisoire</b>
                                 </div>
                                 <div class="card-body">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title text-center h2  fw-bold">{{ $site_sta->nbr_RP }}</h5>
-                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                  <div class="text-center">
+                                    <h5 class="h2  fw-bold">@if( $site_sta->nbr_RP > 0)<a href="{{ route('ouvrages.statut', ['statu' => 'RP']) }}">{{ $site_sta->nbr_RP  }}</a>@else 0 @endif</h5>                                    
                                   </div>
                                 </div>
                             </div>
@@ -105,9 +103,8 @@
                                     <b class="">Réception technique</b>
                                 </div>
                                 <div class="card-body">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title text-center h2  fw-bold">{{ $site_sta->nbr_RT }}</h5>
-                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                  <div class="text-center">
+                                    <h5 class="h2  fw-bold">@if( $site_sta->nbr_RT > 0)<a href="{{ route('ouvrages.statut', ['statu' => 'RT']) }}">{{ $site_sta->nbr_RT  }}</a>@else 0 @endif</h5>                                    
                                   </div>
                                 </div>
                             </div>
@@ -118,12 +115,9 @@
                                     <b class="">En cours</b>
                                 </div>
                                 <div class="card-body">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    
-                                      <h5 class="card-title text-center h2  fw-bold">{{ $site_sta->nbr_EC }} </h5>
-                                    
-                                    <a href="#"><i class="fa fa-eye"></i></a>
-                                  </div>
+                                    <div class="text-center">
+                                      <h5 class="h2  fw-bold">@if( $site_sta->nbr_EC > 0)<a href="{{ route('ouvrages.statut', ['statu' => 'EC']) }}">{{ $site_sta->nbr_EC  }}</a>@else 0 @endif</h5>                                    
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -133,9 +127,8 @@
                                     <b class="">Suspendu</b>
                                 </div>
                                 <div class="card-body">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title text-center h2  fw-bold">{{ $site_sta->nbr_SUSPENDU }}</h5>
-                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                  <div class="text-center">
+                                    <h5 class="h2  fw-bold">@if( $site_sta->nbr_SUSPENDU > 0)<a href="{{ route('ouvrages.statut', ['statu' => 'SUSPENDU']) }}">{{ $site_sta->nbr_SUSPENDU  }}</a>@else 0 @endif</h5>                                    
                                   </div>
                                 </div>
                             </div>
@@ -143,12 +136,11 @@
                         <div class="col-xl-2">
                             <div class="card">
                                 <div class="card-header text-center" style="background-color: #126e5127;">
-                                    <b class="">Contrat non signé</b>
+                                    <b class="">Non demarré</b>
                                 </div>
                                 <div class="card-body">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title text-center h2  fw-bold">{{ $site_sta->nbr_CONTRAT_NON_SIGNE }}</h5>
-                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                  <div class="text-center">
+                                    <h5 class="h2  fw-bold">@if( $site_sta->nbr_NON_DEMARRE > 0)<a href="{{ route('ouvrages.statut', ['statu' => 'NON_DEMARRE']) }}">{{ $site_sta->nbr_NON_DEMARRE  }}</a>@else 0 @endif</h5>                                    
                                   </div>
                                 </div>
                             </div>
@@ -162,32 +154,7 @@
     </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-  <script>
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'],
-        datasets: [{
-          label: 'Revenus',
-          data: [3000, 4000, 3200, 5200, 6000, 5800, 7200],
-          borderColor: '#17a2b8',
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false
-          }
-        }
-      }
-    });
-  </script>
-
-
-
+  <!--  -->
   <script>
     const progressCtx = document.getElementById('progressLineChart').getContext('2d');
     const progressLineChart = new Chart(progressCtx, {

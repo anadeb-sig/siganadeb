@@ -13,7 +13,7 @@ function rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,n
         const somme_frais3 = data.totals.somme_frais3 || 0;
         const somme_montant4 = data.totals.somme_montant4 || 0;
         const somme_frais4 = data.totals.somme_frais4 || 0;
-        const somme_montant5 = data.totals.somme_montant5 || 0;
+        const somme_montant5 = data.totals.somme_montant5 || 0; 
         const somme_frais5 = data.totals.somme_frais5 || 0;
         const somme_montant6 = data.totals.somme_montant6 || 0;
         const somme_frais6 = data.totals.somme_frais6 || 0;

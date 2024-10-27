@@ -71,14 +71,14 @@ class Site extends Model
     
     public function statistique_site()
     {
-        $site = DB::table('sites')
+        $site = DB::table('ouvrages')
             ->selectRaw('
                 COUNT(CASE WHEN statu = "EC" THEN 1 END) as nbr_EC,
                 COUNT(CASE WHEN statu = "RD" THEN 1 END) as nbr_RD,
                 COUNT(CASE WHEN statu = "RP" THEN 1 END) as nbr_RP,
                 COUNT(CASE WHEN statu = "RT" THEN 1 END) as nbr_RT,
                 COUNT(CASE WHEN statu = "SUSPENDU" THEN 1 END) as nbr_SUSPENDU,
-                COUNT(CASE WHEN statu = "CONTRAT_NON_SIGNE" THEN 1 END) as nbr_CONTRAT_NON_SIGNE
+                COUNT(CASE WHEN statu = "NON_DEMARRE" THEN 1 END) as nbr_NON_DEMARRE
             ')
             ->first(); // Utilisation de `first()` car un seul résultat est attendu
 

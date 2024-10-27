@@ -62,6 +62,7 @@
                 $('.projet_id').val(res.projet_id);
                 $('.descrip').val(res.descrip);
                 $('.financement_id').val(res.financement_id);
+                $('.statu').val(res.statu);
             })
         });
 
@@ -105,7 +106,34 @@
         })
     });
 
+    $('body').on('click', '#demande_suspension', function(e){
+            e.preventDefault();
+            let id = $(this).data('id');
+            $('#site_id').val(id);
+                $('.modal-title').text('Nouvelle demande de suspension');
+                $('.add_demande_modal').modal('show');
+                $('#form')[0].reset();
+        });
 
+    // Ajout de demande de suspension du site
+    $('#add_demade_btn').on('submit', function(e){
+        e.preventDefault();
+        var form = $(this).serialize();
+        var url = $(this).attr('action');
+        $.ajax({
+            type: 'post',
+            url: url,
+            data: form,
+            dataType: 'json',
+            success: function(){
+                $('#form')[0].reset();
+                $('.add_demande_modal').modal('hide');
+                $('#form')[0].reset();
+                index_site();
+            }
+        })
+    });
+    
     function index_ouvrage(){
         $.get("{{URL::to('ouvrages')}}", function(data){
             $('.gridjs-table').empty().html(data);

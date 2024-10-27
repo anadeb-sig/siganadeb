@@ -109,39 +109,19 @@ class ContratsController extends Controller
 
             $dataa = $this->getDataa($request);
 
+            //$lastInsertedId = null;
+                
             $ouvrage_id = $request->ouvrage_id;
 
-            $lastInsertedId = null;
-
             for ($i=0; $i < count($ouvrage_id) ; $i++) { 
-                $dataa["ouvrage_id"] = $ouvrage_id[$i];
-                $dataa["contrat_id"] = $id;       
-                $lastInsertedId = DB::table('signers')->insertGetId($dataa);       
+                $concat = $ouvrage_id[$i] .''.$id;
+                $nbr = Signer::where(DB::raw('CONCAT(ouvrage_id,contrat_id)'), $concat)->count();
+                if ($nbr === 0) {
+                    $dataa["ouvrage_id"] = $ouvrage_id[$i];
+                    $dataa["contrat_id"] = $id;       
+                    DB::table('signers')->insertGetId($dataa);
+                }       
             }
-
-            // Récupérer le site_id basé sur l'ID du dernier signer inséré
-            $siteId = DB::table('ouvrages')
-            ->where('id', function ($query) use ($lastInsertedId) {
-                $query->select('ouvrage_id')
-                    ->from('signers')
-                    ->where('id', $lastInsertedId);
-            })
-            ->value('site_id');
-
-            // Mettre à jour le statut du site si le site_id est trouvé
-            if ($data["date_debut"] <= now() && $siteId >0) {
-            DB::table('sites')
-                ->where('statu', 'CONTRAT_NON_SIGNE')
-                ->where('id', $siteId)
-                ->update(['statu' => 'EC']);
-            }else if ($data["date_debut"] > now() && $siteId >0) {
-                DB::table('sites')
-                ->where('statu', 'CONTRAT_NON_SIGNE')
-                ->where('id', $siteId)
-                ->update(['statu' => 'NON_DEMARRE']);
-            }
-
-            
 
             return redirect()->route('contrats.index')->with('success_message', 'Contrat ajouté avec succès');
          
@@ -171,7 +151,7 @@ class ContratsController extends Controller
         ->join('communes', 'communes.id', '=', 'cantons.commune_id')
         ->join('prefectures', 'prefectures.id', '=', 'communes.prefecture_id')
         ->join('regions', 'regions.id', '=', 'prefectures.region_id')
-        ->select('contrats.id', 'date_sign', 'date_debut', 'date_fin', 'code','nom_reg', 'nom_pref', 'nom_comm','nom_cant','nom_vill')
+        ->select('contrats.id', 'sites.id as iid', 'date_sign', 'date_debut', 'date_fin', 'code')
         ->findOrFail($id);
         return view('contrats.show', compact('signer'));
     }

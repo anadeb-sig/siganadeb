@@ -11,6 +11,11 @@
         <div class="card-header">
             <div class="d-sm-flex align-items-center justify-content-between mb-2 mt-2">
                 <h1 class="h3 mb-0 text-gray-800">Etat de paiements des BD</h1>
+                <div class="file-export">
+                    <button class="btn btn-outline-cyan btnform" onclick="fetchAllDataForExport()">
+                        <i class="fas fa-file-export"></i> &nbsp;Export
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -200,5 +205,70 @@
                 modal.style.display = "none";
             }
         }
+    </script>
+
+<script>
+        function fetchAllDataForExport() {
+            // Récupération des valeurs des filtres
+                let nom_reg = document.getElementById('nom_reg').value;
+                let financement = document.getElementById('financement').value;
+                let nom_vill = document.getElementById('nom_vill').value;
+                let nom_comm = document.getElementById('nom_comm').value;
+                let nom = document.getElementById('nom').value;
+                let prenom = document.getElementById('prenom').value;
+                let sexe = document.getElementById('sexe').value;
+                let type_card = document.getElementById('type_card').value;
+                let card_number = document.getElementById('card_number').value;
+                let telephone = document.getElementById('telephone').value;
+                let SommeTM = document.getElementById('SommeTM').value;
+                let montant = document.getElementById('montant').value;
+                let type_transfert = document.getElementById('type_transfert').value;
+
+            // Appel à l'API pour récupérer les données
+            fetch(`/beneficiaires/fetch_etat_paiements?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&sexe=${sexe}&type_card=${type_card}&card_number=${card_number}&financement=${financement}&SommeTM=${SommeTM}&montant=${montant}&type_transfert=${type_transfert}&export=true`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.data.length); // Affiche les données brutes
+                    if (data && data.data) {
+                        exporterVersExcel(data.data); // Exporter toutes les données récupérées
+                    } else {
+                        console.warn("Aucune donnée à exporter ou data.data n'est pas défini.");
+                    }
+                })
+                .catch(error => console.error('Erreur de récupération des données:', error));
+        }
+
+        // Fonction d'exportation vers Excel
+        function exporterVersExcel(data) {
+            if (!data || data.length === 0) {
+                console.warn("Aucune donnée à exporter.");
+                return;
+            }
+
+            // Créer un nouveau classeur (workbook)
+            const workbook = XLSX.utils.book_new();
+            
+            // Convertir les données JSON en une feuille de calcul (worksheet)
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            
+            // Ajouter la feuille de calcul au classeur
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Données');
+            
+            // Obtenir la date actuelle pour le nom du fichier
+            let today = new Date();
+            let yyyy = today.getFullYear();
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let dd = String(today.getDate()).padStart(2, '0');
+            let filename = `${yyyy}_${mm}_${dd}_etatpaiement_par_statut.xlsx`;
+
+            // Exporter le classeur en fichier Excel
+            XLSX.writeFile(workbook, filename);
+        }
+
     </script>
 @endsection

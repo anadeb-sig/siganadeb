@@ -10,6 +10,7 @@ use App\Models\Region;
 use App\Models\Site;
 use App\Models\Financement;
 use Illuminate\Http\Request;
+use Validator;
 use DB;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -53,7 +54,7 @@ class OuvragesController extends Controller
     }
 
     public function fetch(Request $request){
-        $perPage = 60;
+        $perPage = 30;
 
         $nom_reg = $request->nom_reg;
         $nom_comm = $request->nom_comm;
@@ -62,6 +63,7 @@ class OuvragesController extends Controller
         $nom_fin = $request->nom_fin;
         $nom_site = $request->nom_site;
         $type_ouvrage = $request->nom_type;
+        $statu = $request->statu;
 
         $ouvrages = Ouvrage::join('sites', 'sites.id', '=', 'ouvrages.site_id' )
                     ->join('typeouvrages', 'typeouvrages.id', '=', 'ouvrages.typeouvrage_id' )
@@ -72,7 +74,7 @@ class OuvragesController extends Controller
                     ->join('communes', 'communes.id', '=', 'cantons.commune_id')
                     ->join('prefectures', 'prefectures.id', '=', 'communes.prefecture_id')
                     ->join('regions', 'regions.id', '=', 'prefectures.region_id')
-                    ->select('ouvrages.id', 'ouvrages.nom_ouvrage', 'projets.name', 'financements.nom_fin', 'ouvrages.descrip', 'typeouvrages.nom_type', 'sites.nom_site')
+                    ->select('ouvrages.id', 'ouvrages.nom_ouvrage', 'projets.name', 'financements.nom_fin', 'ouvrages.descrip', 'typeouvrages.nom_type', 'sites.nom_site', 'ouvrages.statu')
                     ->when($nom_reg, function ($query, $nom_reg) {
                         return $query->where('regions.nom_reg', 'like', "%$nom_reg%");
                     })->when($nom_comm, function ($query, $nom_comm) {
@@ -87,10 +89,26 @@ class OuvragesController extends Controller
                         return $query->where('financements.nom_fin', 'like', "%$nom_fin%");
                     })->when($nom_site, function ($query, $nom_site) {
                         return $query->where('sites.nom_site', 'like', "%$nom_site%");
+                    })->when($statu, function ($query, $statu) {
+                        return $query->where('ouvrages.statu', 'like', "%$statu%");
                     })->orderByDesc('ouvrages.created_at')
                     ->paginate($perPage);
 
         return response()->json($ouvrages);
+    }
+
+    public function index_statu($statut)
+    {
+        $statu = $statut;
+        $Typeouvrages = Typeouvrage::all();
+        $regions = Region::all();
+        $projets = DB::table('projets')
+                ->whereIn('name', ['INFRASTRUCTURE/COSO', 'INFRASTRUCTURE/CLASSIQUE'])
+                ->get();
+
+        $Financements = Financement::all();
+        
+        return view('ouvrages.index', compact('regions', 'Typeouvrages', 'projets','Financements','statu'));
     }
 
     /**
@@ -151,7 +169,7 @@ class OuvragesController extends Controller
         ->join('communes', 'communes.id', '=', 'cantons.commune_id')
         ->join('prefectures', 'prefectures.id', '=', 'communes.prefecture_id')
         ->join('regions', 'regions.id', '=', 'prefectures.region_id')
-        ->select('ouvrages.id', 'nom_vill', 'nom_reg', 'nom_pref', 'nom_fin', 'nom_ouvrage', 'descrip', 'nom_cant', 'nom_comm', 'nom_type','name')
+        ->select('ouvrages.id', 'nom_vill', 'nom_reg', 'nom_pref', 'nom_fin', 'nom_ouvrage', 'descrip', 'nom_cant', 'nom_comm', 'nom_type','name', 'ouvrages.statu')
         ->findOrFail($id);
 
         return response()->json($ouvrage);
@@ -217,7 +235,45 @@ class OuvragesController extends Controller
         }
     }
 
-    
+    //Modification du status du site
+    public function updateStatus($id, $statu)
+    {
+        // Validation
+        $validate = Validator::make([
+            'id'   => $id,
+            'statu'    => $statu
+        ], [
+            'id'   =>  'required|exists:ouvrages,id',
+            'statu'    =>  'required',
+        ]);
+
+        // If Validations Fails
+        if($validate->fails()){
+            return redirect()->route('ouvrages.index')->with('error', $validate->errors()->first());
+        }else{
+            // if ($statu === "EC") {
+            //     DB::beginTransaction();
+            //     // Update Status
+            //     Ouvrage::whereId($id)->update(['statu' => $statu]);
+
+            //     Contrat::join('signers', 'contrats.id', '=', 'signers.contrat_id')
+            //             ->join('ouvrages', 'signers.ouvrage_id', '=', 'ouvrages.id')
+            //             ->where('signers.ouvrage_id', $id)
+            //             ->update(['statu' => '']);
+            //     // Commit And Redirect on index with Success Message
+            //     DB::commit();
+            // }
+            DB::beginTransaction();
+
+            // Update Status
+            Ouvrage::whereId($id)->update(['statu' => $statu]);
+
+            // Commit And Redirect on index with Success Message
+            DB::commit();
+            return redirect()->route('ouvrages.index')->with('success_message','Statut d\'ouvrage modifié avec succès!');
+        }
+    }
+
     /**
      * Get the request's data from the request.
      *
@@ -233,6 +289,7 @@ class OuvragesController extends Controller
             'projet_id' => 'required',
             'financement_id' => 'required',
             'typeouvrage_id' => 'required', 
+            'statu' => 'required', 
         ];
         $data = $request->validate($rules);
         return $data;
@@ -434,5 +491,54 @@ class OuvragesController extends Controller
         }
     }
 
+    public function statistique_ouvrages(Request $request)
+    {
+        $ouvrages = DB::table('ouvrages')
+                    ->join('sites', 'sites.id', '=', 'ouvrages.site_id')
+                    ->join('typeouvrages', 'typeouvrages.id', '=', 'ouvrages.typeouvrage_id')
+                    ->join('financements', 'ouvrages.financement_id', '=', 'financements.id')
+                    ->join('projets', 'ouvrages.projet_id', '=', 'projets.id')
+                    ->join('villages', 'villages.id', '=', 'sites.village_id')
+                    ->join('cantons', 'cantons.id', '=', 'villages.canton_id')
+                    ->join('communes', 'communes.id', '=', 'cantons.commune_id')
+                    ->join('prefectures', 'prefectures.id', '=', 'communes.prefecture_id')
+                    ->join('regions', 'regions.id', '=', 'prefectures.region_id')
+                    ->selectRaw('
+                        COUNT(CASE WHEN statu = "EC" THEN 1 END) as nbr_EC,
+                        COUNT(CASE WHEN statu = "RD" THEN 1 END) as nbr_RD,
+                        COUNT(CASE WHEN statu = "RP" THEN 1 END) as nbr_RP,
+                        COUNT(CASE WHEN statu = "RT" THEN 1 END) as nbr_RT,
+                        COUNT(CASE WHEN statu = "SUSPENDU" THEN 1 END) as nbr_SUSPENDU,
+                        COUNT(CASE WHEN statu = "NON_DEMARRE" THEN 1 END) as nbr_NON_DEMARRE
+                    ')
+                    ->when($nom_reg, function ($query) use ($nom_reg) {
+                        $query->where('regions.nom_reg', 'like', "%$nom_reg%");
+                    })
+                    ->when($nom_comm, function ($query) use ($nom_comm) {
+                        $query->where('communes.nom_comm', 'like', "%$nom_comm%");
+                    })
+                    ->when($nom_ouvrage, function ($query) use ($nom_ouvrage) {
+                        $query->where('ouvrages.nom_ouvrage', 'like', "%$nom_ouvrage%");
+                    })
+                    ->when($type_ouvrage, function ($query) use ($type_ouvrage) {
+                        $query->where('typeouvrages.nom_type', 'like', "%$type_ouvrage%");
+                    })
+                    ->when($nom_projet, function ($query) use ($nom_projet) {
+                        $query->where('projets.name', 'like', "%$nom_projet%");
+                    })
+                    ->when($nom_fin, function ($query) use ($nom_fin) {
+                        $query->where('financements.nom_fin', 'like', "%$nom_fin%");
+                    })
+                    ->when($nom_site, function ($query) use ($nom_site) {
+                        $query->where('sites.nom_site', 'like', "%$nom_site%");
+                    })
+                    ->when($statu, function ($query) use ($statu) {
+                        $query->where('ouvrages.statu', 'like', "%$statu%");
+                    })
+                    ->first();
+
+
+        return response()->json($ouvrages);
+    }
 
 }

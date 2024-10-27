@@ -1,46 +1,17 @@
 
 <div class="card">
-    <div class="modal-header">
-        Localisation géographique et ouvrages à construire
+    <div class="card-header">
+        <div class="d-sm-flex align-items-center justify-content-between mb-0 mt-0">
+            <h1 class="h3 mb-0 text-gray-800">Site et ouvrages</h1>
+            <a class="btn btn-outline-success btnform" onclick="ajouterChamp()">
+                <i class="fas fa-plus"></i> 
+                &nbsp;site
+            </a>
+        </div>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-xl-6 {{ $errors->has('region_id') ? 'has-error' : '' }}">
-                <label for="region_id" class="control-label">Région</label>
-                <select class="form-control" id="region_comm" required="true">
-                    <option value="" style="display: none;" disabled selected>Selectionner la région</option>
-                    @foreach ($regions as $region)
-                        <option value="{{ $region->id }}">
-                            {{ $region->nom_reg }}
-                        </option>
-                    @endforeach
-                </select>        
-                {!! $errors->first('region_id', '<p class="help-block">:message</p>') !!}
-            </div>
-            <div class="col-xl-6 {{ $errors->has('commune_id') ? 'has-error' : '' }}">
-                
-                <label for="commune_id" class="control-label">Commune</label>
-                <select class="form-control" id="commune_comm" required="true" disabled>
-                        <option value="" disabled selected>Selectionner la commune</option>
-                </select>        
-                {!! $errors->first('canton_id', '<p class="help-block">:message</p>') !!}
-            </div>
+        <div  id="container">
         </div>
-        <div class="row mt-3">
-            <div class="col-xl-12 {{ $errors->has('site_id') ? 'has-error' : '' }}">
-                <label for="site_id" class="control-label">{{ __('Site à construire') }}</label>
-                <select class="form-control" id="site_comm" disabled required="true">
-                    <option value="" disabled selected>{{ __('Sélectionnez le site à construire') }}</option>
-                </select>
-                {!! $errors->first('site_id', '<p class="help-block">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 mb-3 mt-3 mb-sm-0" id="ouvrages_site">
-            </div>
-        </div>
-
     </div>
 </div>
 

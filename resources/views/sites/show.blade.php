@@ -13,10 +13,6 @@
                         <td><span id="show_nom_site"></span></td>
                     </tr>
                     <tr>
-                        <td>Status</td>
-                        <td><span id="show_statu"></span></td>
-                    </tr>
-                    <tr>
                         <td>Description</td>
                         <td><span id="show_descrip_site"></span></td>
                     </tr>

@@ -8,7 +8,7 @@ use App\Models\Demande;
 use App\Models\User;
 use App\Models\Region;
 use App\Models\Signer;
-use App\Models\Site;
+use App\Models\Ouvrage;
 use Carbon\Carbon;
 use App\Models\Contrat;
 use App\Notifications\ApproveNotification;
@@ -32,7 +32,7 @@ class DemandeController extends Controller
     }
 
     public function fetch(Request $request){
-        $perPage = 60;
+        $perPage = 30;
         $nom_reg = $request->nom_reg;
         $nom_comm = $request->nom_comm;
         $nom_site = $request->nom_site;
@@ -41,15 +41,17 @@ class DemandeController extends Controller
         $date_demarre_fin = $request->date_demarre_fin;
         $user = $request->user;
         $titre = $request->titre;
+        $nom_ouvrage = $request->nom_ouvrage;
         
         // Afficher toutes les demandes de l'utilisateur connecté
-        $demandes = Demande::join('sites', 'demandes.site_id', '=', 'sites.id' )
+        $demandes = Demande::join('ouvrages', 'demandes.ouvrage_id', '=', 'ouvrages.id' )
+                    ->join('sites', 'ouvrages.site_id', '=', 'sites.id' )
                     ->join('villages', 'villages.id', '=', 'sites.village_id' )
                     ->join('cantons', 'cantons.id', '=', 'villages.canton_id')
                     ->join('communes', 'communes.id', '=', 'cantons.commune_id')
                     ->join('prefectures', 'prefectures.id', '=', 'communes.prefecture_id')
                     ->join('regions', 'regions.id', '=', 'prefectures.region_id')
-                    ->select('nom_reg','nom_comm', 'nom_site','demandes.id','demandes.date_debut_susp','demandes.statu','sites.id as iid')
+                    ->select('nom_reg', 'nom_ouvrage', 'nom_comm', 'nom_site','demandes.id','demandes.date_debut_susp','demandes.statu','ouvrages.id as iid')
                     ->when($nom_reg, function ($query, $nom_reg) {
                         return $query->where('regions.nom_reg', 'like', "%$nom_reg%");
                     })->when($nom_comm, function ($query, $nom_comm) {
@@ -58,6 +60,8 @@ class DemandeController extends Controller
                         return $query->where('sites.nom_site', 'like', "%$nom_site%");
                     })->when($statu, function ($query, $statu) {
                         return $query->where('demandes.statu', 'like', "%$statu%");
+                    })->when($nom_ouvrage, function ($query, $nom_ouvrage) {
+                        return $query->where('ouvrages.nom_ouvrage', 'like', "%$nom_ouvrage%");
                     })->when($titre, function ($query, $titre) {
                         return $query->where('demandes.titre', 'like', "%$titre%");
                     })->when($user, function ($query, $user) {
@@ -93,8 +97,7 @@ class DemandeController extends Controller
             // Récupérer les contrats associés au site
             $contrats = Contrat::join('signers', 'contrats.id', '=', 'signers.contrat_id')
                 ->join('ouvrages', 'ouvrages.id', '=', 'signers.ouvrage_id')
-                ->join('sites', 'ouvrages.site_id', '=', 'sites.id')
-                ->where('sites.id', $request->site_id)
+                ->where('ouvrages.id', $request->ouvrage_id)
                 ->select('contrats.id', 'contrats.date_fin', 'contrats.date_debut') // Sélectionnez l'ID et la date_fin
                 ->get();
         
@@ -106,12 +109,6 @@ class DemandeController extends Controller
 
                 $data['date_debut_old'] = $contrat->date_debut->toDateString();
                 $data['date_fin_old'] = $contrat->date_fin->toDateString();
-
-                // Vérification si le nombre de jours demandé dépasse les jours restants
-                if ($joursRestants < $nbJrDemande) {
-                    return redirect()->route('demandes.index')->with('error_message', 
-                        'Pas possible de suspendre les travaux pour ' . $nbJrDemande . ' jours. Le nombre de jours restants est de seulement ' . $joursRestants . ' jours.');
-                }
             }
 
             // Enregistrer la demande
@@ -120,9 +117,9 @@ class DemandeController extends Controller
             // Notification à l'administrateur
             $admin = User::role('admin')->first(); // Récupérer l'utilisateur avec le rôle admin
             $details = ['id' => $id];
-            $sites = ['site_id' => $request->site_id];
-            $admin->notify(new ApproveNotification($details, $sites));
-            return redirect()->route('sites.index')->with('success_message', 'Demande soumise avec succès');
+            $ouvrage_id = ['ouvrage_id' => $request->ouvrage_id];
+            $admin->notify(new ApproveNotification($details, $ouvrage_id));
+            return redirect()->route('ouvrages.index')->with('success_message', 'Demande soumise avec succès');
         } catch (Exception $exception) {
             // Gestion des erreurs
             return back()->with('error_message', 'Une erreur inattendue s’est produite lors de la tentative de traitement de votre demande.');
@@ -150,7 +147,7 @@ class DemandeController extends Controller
     protected function getData(Request $request)
     {
         $rules = [
-            'site_id' => 'required',
+            'ouvrage_id' => 'required',
             'titre' => 'required|string|max:255',
             'description' => 'required|string',
             'date_debut_susp' => 'required|date',
@@ -164,7 +161,8 @@ class DemandeController extends Controller
 
     public function detail($id,$iid)
     {
-        $demande = Demande::join('sites', 'demandes.site_id', '=', 'sites.id' )
+        $demande = Demande::join('ouvrages', 'demandes.ouvrage_id', '=', 'ouvrages.id' )
+        ->join('sites', 'ouvrages.site_id', '=', 'sites.id' )
         ->join('villages', 'villages.id', '=', 'sites.village_id' )
         ->join('users', 'users.id', '=', 'demandes.user_id' )
         ->join('cantons', 'cantons.id', '=', 'villages.canton_id')
@@ -174,8 +172,7 @@ class DemandeController extends Controller
         ->select('last_name', 'first_name','mobile_number','users.email as email_user','nom_reg','nom_pref','nom_comm', 'nom_cant','nom_vill','titre', 'description', 'date_debut_susp', 'nbJr', 'demandes.statu', 'demandes.id', 'demandes.created_at')
         ->findOrFail($id);
 
-        $site = Site::join('ouvrages', 'ouvrages.site_id', '=', 'sites.id' )
-        ->join('signers', 'ouvrages.id', '=', 'signers.ouvrage_id' )
+        $ouvrage = Ouvrage::join('signers', 'ouvrages.id', '=', 'signers.ouvrage_id' )
 
         ->join('entreprises', 'entreprises.id', '=', 'signers.entreprise_id' )
         ->join('contrats', 'signers.contrat_id', '=', 'contrats.id' )
@@ -184,7 +181,7 @@ class DemandeController extends Controller
         ->join('financements', 'ouvrages.financement_id', '=', 'financements.id' )
         ->join('projets', 'ouvrages.projet_id', '=', 'projets.id' )
         ->findOrFail($iid);
-        return view('demandes.detail', compact('site', 'demande'));
+        return view('demandes.detail', compact('ouvrage', 'demande'));
     }
 
 }

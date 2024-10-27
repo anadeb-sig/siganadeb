@@ -1,4 +1,4 @@
-function action_site(id, statu) {
+function action_site(id) {
   let actions = `
     <div class='dropdown'>
         <button class='btn nav-btn' type='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -14,49 +14,6 @@ function action_site(id, statu) {
             <a href='javascript:void(0)' id='delete_site' data-id='${id}' class='dropdown-item'>
               Supprimer
             </a>
-  `;
-
-  // Ajouter des actions supplémentaires en fonction du statut
-  if (statu === "NON_DEMARRE") {
-    actions += `
-      <a href='sites/update/status/${id}/EC' class='dropdown-item'>
-        Demarrage
-      </a>
-    `;
-  } else if (statu === "EC") {
-    actions += `
-      <a href='javascript:void(0);' id="demande_suspension" data-url='sites/show/${id}'  data-id='${id}' class='dropdown-item'>
-        Suspendre
-      </a>
-      <a href='sites/update/status/${id}/RT' class='dropdown-item'>
-        Réception technique
-      </a>
-      <a href='sites/update/status/${id}/RP' class='dropdown-item'>
-        Réception provisoir
-      </a>
-      <a href='sites/update/status/${id}/RD' class='dropdown-item'>
-        Réception définitve
-      </a>
-    `;
-  } else if (statu === "RT") {
-    actions += `
-      <a href='sites/update/status/${id}/RP' class='dropdown-item'>
-        Réception provisoir
-      </a>
-      <a href='sites/update/status/${id}/RD' class='dropdown-item'>
-        Réception définitve
-      </a>
-    `;
-  }else if (statu === "RP") {
-    actions += `
-      <a href='sites/update/status/${id}/RD' class='dropdown-item'>
-        Réception définitve
-      </a>
-    `;
-  }
-
-  // Fermer les balises HTML
-  actions += `
         </div>
     </div>
   `;
@@ -64,51 +21,19 @@ function action_site(id, statu) {
   return gridjs.html(actions);
 }
 
-function statu_sta(statu) {
-  let action = '';
-  switch(statu) {
-    case "CONTRAT_NON_SIGNE":
-      action += `<span class="badge bg-danger">Contrat non signé</span>`;
-      break;
-    case "EC":
-      action += `<span class="badge bg-light text-body">En cours</span>`;
-      break;
-    case "SUSPENDU":
-      action += `<span class="badge bg-secondary">Suspendu</span>`;
-      break;
-    case "NON_DEMARRE":
-      action += `<span class="badge bg-warning">Non démarré</span>`;
-      break;
-    case "RT":
-      action += `<span class="badge bg-success">Réception technique</span>`;
-      break;
-    case "RP":
-      action += `<span class="badge bg-success">Réception provisoire</span>`;
-      break;
-    case "RD":
-      action += `<span class="badge bg-success">Réception définitive</span>`;
-      break;
-      default:
-        action += `<span class="badge bg-dark">Inconnu</span>`
-  }
-
-  return gridjs.html(action);
-}
-
-function rendtableau_site(nom_reg, nom_comm, nom_cant, nom_site, statu) {
-  fetch(`sites/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_site=${nom_site}&statu=${statu}`)
+function rendtableau_site(nom_reg, nom_comm, nom_cant, nom_site) {
+  fetch(`sites/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_site=${nom_site}`)
     .then(response => response.json())
     .then(data => {
       let tableDataa = data.map(item => [
         item.nom_reg,
         item.nom_comm,
         gridjs.html(`<span id="site_${item.id}">${item.nom_site}</span>`),  // Ajout temporaire
-        statu_sta(item.statu),
-        action_site(item.id, item.statu)
+        action_site(item.id)
       ]);
 
       const grid = new gridjs.Grid({
-        columns: ["Région", "Commune", "Site", "Status", "Actions"],
+        columns: ["Région", "Commune", "Site", "Actions"],
         data: tableDataa,
         sort: true,
         search: true,

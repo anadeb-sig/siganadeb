@@ -25,6 +25,7 @@ function rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone
         const som_SommeSucces = data.totals.totalSommeSucces || 0;
         const som_SommePending = data.totals.totalSommePending || 0;
         const som_SommeCancel = data.totals.totalSommeCancel || 0;
+        const som_SommeFail = data.totals.totalSommeFail || 0;
         const som_SommeTM = data.totals.totalSommeTM || 0;
         const som_SommeMIE = data.totals.totalSommeMIE || 0;
 
@@ -44,7 +45,8 @@ function rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone
             item.nombre_pending,
             item.nombre_Cancel,
             item.SommeCancel.toLocaleString('fr-FR'),
-            item.nombre_Fail
+            item.nombre_Fail,
+            item.SommeFail.toLocaleString('fr-FR')
         ]);
 
         const myGrid = new gridjs.Grid({
@@ -94,7 +96,14 @@ function rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone
                         name: 'Som cancel'
                     }],
                 },
-                "Nbr échoué"
+                "Nbr échoué",
+                {
+                    id: "som_fail",
+                    name: Number(som_SommeFail).toLocaleString(),
+                    columns: [{
+                        name: 'Som fail'
+                    }],
+                }
             ],
             data: tableDataa,
             pagination: {

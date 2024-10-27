@@ -45,20 +45,20 @@ function statu_statu(statu) {
   return gridjs.html(action);
 }
 
-function rendtableau_demande(nom_reg, nom_comm, nom_site,statu,user,titre,date_demarre_debut,date_demarre_fin) {
-  fetch(`demandes/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_site=${nom_site}&statu=${statu}&user=${user}&titre=${titre}&date_demarre_debut=${date_demarre_debut}&date_demarre_fin=${date_demarre_fin}`)
+function rendtableau_demande(nom_reg, nom_comm, nom_site,statu,user,titre,date_demarre_debut,date_demarre_fin,nom_ouvrage) {
+  fetch(`demandes/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_site=${nom_site}&statu=${statu}&user=${user}&titre=${titre}&date_demarre_debut=${date_demarre_debut}&date_demarre_fin=${date_demarre_fin}&nom_ouvrage=${nom_ouvrage}`)
     .then(response => response.json())
     .then(data => {
       let tableDataa = data.data.map(item => [
         item.nom_reg,
         item.nom_comm,
-        item.nom_site,
+        item.nom_ouvrage,
         statu_statu(item.statu),
         action_demande(item.id,item.iid, item.statu)                  
       ]);
 
       const grid = new gridjs.Grid({
-        columns: ["Région", "Commune", "Site", "Status", "Actions"],
+        columns: ["Région", "Commune", "Ouvrage", "Statut", "Actions"],
         data: tableDataa,
         sort: true,
         search: true,

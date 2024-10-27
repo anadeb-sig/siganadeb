@@ -110,24 +110,32 @@ function rendtableau_contrat(code, date_ordre_debut, date_ordre_fin, date_demarr
               // Calcul de la différence en jours
               let date1 = new Date();
               let date2 = new Date(item.date_fin);
-              let differenceEnJours = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
+              let date3 = new Date(item.date_debut);
 
               // Mise à jour de la cellule correspondante dans le tableau
               const siteCell = document.getElementById(`contrat_${item.id}`);
-              if (siteCell && item.statu != "SUSPENDU") {
-                if (differenceEnJours <= -45) {
-                  siteCell.innerHTML = "<div class='badge bg-secondary font-size-12'>Pénalité de " + Math.abs(differenceEnJours) + " Jour(s)</div>";
-                } else if (differenceEnJours < 0) {
-                  siteCell.innerHTML = "<a class='badge bg-danger font-size-12' href='mailto:" + email + "'>Pénalité de " + Math.abs(differenceEnJours) + " jour(s)</a>";
-                } else if (differenceEnJours === 0) {
-                  siteCell.innerHTML = "<a class='badge bg-warning font-size-12' href='mailto:" + email + "'>Jours de contrat terminés</a>";
-                } else if (differenceEnJours > 0) {
-                  siteCell.innerHTML = "<a class='badge bg-success font-size-12'>Reste " + differenceEnJours + " Jour(s)</a>";
+
+              if (date3 > date1) {
+                siteCell.innerHTML = "<a class='badge bg-yellow font-size-12'>Non demarré</a>";
+              }else{
+                let differenceEnJours = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
+                if (siteCell && item.statu != "SUSPENDU") {
+                  if (differenceEnJours <= -45) {
+                    siteCell.innerHTML = "<div class='badge bg-secondary font-size-12'>Pénalité de " + Math.abs(differenceEnJours) + " Jour(s)</div>";
+                  } else if (differenceEnJours < 0) {
+                    siteCell.innerHTML = "<a class='badge bg-danger font-size-12' href='mailto:" + email + "'>Pénalité de " + Math.abs(differenceEnJours) + " jour(s)</a>";
+                  } else if (differenceEnJours === 0) {
+                    siteCell.innerHTML = "<a class='badge bg-warning font-size-12' href='mailto:" + email + "'>Jours de contrat terminés</a>";
+                  } else if (differenceEnJours > 0) {
+                    siteCell.innerHTML = "<a class='badge bg-success font-size-12'>Reste " + differenceEnJours + " Jour(s)</a>";
+                  }
+                } else if (item.statu === "SUSPENDU") {
+                  siteCell.innerHTML = "<a class='badge bg-success font-size-12'>Contrat suspendu</a>";
+                } else if (date1 > date2 && item.statu === "FERME") {
+                  siteCell.innerHTML = "<a class='badge bg-success font-size-12'>Contrat cloturé</a>";
+                }else {
+                  console.error(`L'élément avec l'ID contrat_${item.id} est introuvable.`);
                 }
-              } else if (item.statu === "SUSPENDU") {
-                siteCell.innerHTML = "<a class='badge bg-success font-size-12'>Contrat suspendu</a>";
-              }else {
-                console.error(`L'élément avec l'ID contrat_${item.id} est introuvable.`);
               }
             })
             .catch(error => {

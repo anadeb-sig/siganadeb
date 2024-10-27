@@ -38,12 +38,12 @@
 
 
 <div class="row mt-4">
-    <div class="col-md-6 {{ $errors->has('nom_ouvrage') ? 'has-error' : '' }}">
+    <div class="col-xl-4 {{ $errors->has('nom_ouvrage') ? 'has-error' : '' }}">
         <label for="nom_ouvrage" class="control-label">{{ __('Nom de l\'ouvrage') }}</label>
         <input class="form-control majuscules" name="nom_ouvrage" type="text" id="nom_ouvrage" value="" min="0" max="150" placeholder="{{ __('Entrer le nom de l\'ouvrage') }}">
         {!! $errors->first('nom_ouvrage', '<p class="help-block">:message</p>') !!}
     </div>
-    <div class="col-md-6 {{ $errors->has('typeouvrage_id') ? 'has-error' : '' }}">
+    <div class="col-xl-4 {{ $errors->has('typeouvrage_id') ? 'has-error' : '' }}">
         <label for="typeouvrage_id" class="control-label">{{ __('Type de l\'ouvrage') }}</label>
         <select class="form-control" id="typeouvrage_id" name="typeouvrage_id" required="true">
         	    <option value="" style="display: none;" disabled selected>{{ __('Selectionner le type de l\'ouvrage') }}</option>
@@ -54,6 +54,18 @@
 			@endforeach
         </select>
         {!! $errors->first('typeouvrage_id', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="col-xl-4 {{ $errors->has('nom_pr') ? 'has-error' : '' }}">
+        <label for="statu" class="control-label">Status</label>
+        <select class="form-control" name="statu">
+            <option value="" style="display: none;" disabled selected>Selectionner le status</option>
+            <option value="NON_DEMARRE">NON DEMARRE</option>
+            <option value="EC">EN COURS</option>
+            <option value="RT">RECEPTION TECHNIQUE</option>
+            <option value="RP">RECEPTION PROVISOIRE</option>
+            <option value="RD">RECEPTION DEFINITIVE</option>
+            <option value="SUSPENDU">SUSPENDU</option>
+        </select>
     </div>
 </div>
 <div class="row mt-4">

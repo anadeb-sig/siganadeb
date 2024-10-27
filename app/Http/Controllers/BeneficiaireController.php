@@ -28,7 +28,7 @@ class BeneficiaireController extends Controller
 
     public function fetch(Request $request)
     {
-        $perPage = 60; // Nombre de lignes par page
+        $perPage = 30; // Nombre de lignes par page
         //$page = $request->query('page', 1); // Page actuelle
         $nom_reg = $request->nom_reg;
         $nom_comm = $request->nom_comm;
@@ -121,160 +121,149 @@ class BeneficiaireController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function fetch_etat_paiements(Request $request)
+    {
+        $type_transfert = null;
+        if (!empty($request->type_transfert)) {
+            $type_transfert = ($request->type_transfert == "MIE") ? ['e.mie' => 1] : ['e.tm' => 1];
+        }
 
-public function fetch_etat_paiements(Request $request)
-{
-    $type_transfert = null;
-    if (!empty($request->type_transfert)) {
-        if ($request->type_transfert == "MIE") {
-            $type_transfert = ['e.mie' => 1];
+        $perPage = 30;
+        $page = $request->query('page', 1);
+        $isExport = $request->query('export', false);
+
+        // Requête de base pour les sommes totales
+        $sumQuery = DB::table('etatpaiements as e')
+            ->join('villages as v', 'e.village_id', '=', 'v.id')
+            ->join('cantons', 'cantons.id', '=', 'v.canton_id')
+            ->join('communes as c', 'c.id', '=', 'cantons.commune_id')
+            ->join('prefectures', 'prefectures.id', '=', 'c.prefecture_id')
+            ->join('regions as r', 'r.id', '=', 'prefectures.region_id')
+            ->selectRaw('SUM(e.SommeSucces) as totalSommeSucces, SUM(e.SommeTM) as totalSommeTM, SUM(e.SommeMIE) as totalSommeMIE, SUM(e.SommePending) as totalSommePending, SUM(e.SommeCancel) as totalSommeCancel, SUM(e.SommeFail) as totalSommeFail');
+
+        // Appliquez les filtres
+        $filters = [
+            'r.nom_reg' => $request->nom_reg,
+            'c.nom_comm' => $request->nom_comm,
+            'v.nom_vill' => $request->nom_vill,
+            'e.nom' => $request->nom,
+            'e.prenom' => $request->prenom,
+            'e.financement' => $request->financement,
+            'e.sexe' => $request->sexe,
+            'e.telephone' => $request->telephone,
+            'e.type_card' => $request->type_card,
+            'e.card_number' => $request->card_number,
+        ];
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $sumQuery->where($column, 'LIKE', '%' . $value . '%');
+            }
+        }
+
+        if (!empty($type_transfert)) {
+            $sumQuery->where($type_transfert);
+        }
+
+        if ($request->SommeTM !== null) {
+            $sumQuery->where(function ($subQuery) use ($request) {
+                if ($request->SommeTM > 0) {
+                    $subQuery->where('e.SommeTM', '>', 0);
+                } elseif ($request->SommeTM === '0') {
+                    $subQuery->where('e.SommeTM', '0');
+                }
+            });
+        }
+
+        if ($request->montant !== null) {
+            $sumQuery->where(function ($subQuery) use ($request) {
+                $montant = (int) $request->montant;
+                if ($montant >= 100000) {
+                    $subQuery->where('e.SommeTM', '>=', 100000);
+                } else {
+                    $ranges = [
+                        [90000, 95000], [75000, 80000], [60000, 65000], [45000, 50000],
+                        [30000, 35000], [15000, 17000], [0, 14000]
+                    ];
+                    foreach ($ranges as [$min, $max]) {
+                        if ($montant >= $min && $montant < $max) {
+                            $subQuery->whereBetween('e.SommeTM', [$min, $max]);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Obtenez les sommes totales
+        $totals = $sumQuery->first();
+
+        // Requête de base pour les données
+        $dataQuery = DB::table('etatpaiements as e')
+            ->join('villages as v', 'e.village_id', '=', 'v.id')
+            ->join('cantons', 'cantons.id', '=', 'v.canton_id')
+            ->join('communes as c', 'c.id', '=', 'cantons.commune_id')
+            ->join('prefectures', 'prefectures.id', '=', 'c.prefecture_id')
+            ->join('regions as r', 'r.id', '=', 'prefectures.region_id')
+            ->select('e.id', 'e.card_number', 'e.nom', 'e.prenom', 'e.sexe', 'e.telephone', 'e.financement', 'e.nbr', 'e.SommeSucces', 'e.nombre_succes', 'SommeTM', 'SommeMIE', 'e.SommePending', 'e.nombre_pending', 'e.SommeCancel', 'e.nombre_Cancel', 'e.SommeFail', 'e.nombre_Fail');
+
+        foreach ($filters as $column => $value) {
+            if (!empty($value)) {
+                $dataQuery->where($column, 'LIKE', '%' . $value . '%');
+            }
+        }
+
+        if (!empty($type_transfert)) {
+            $dataQuery->where($type_transfert);
+        }
+
+        if ($request->SommeTM !== null) {
+            $dataQuery->where(function ($subQuery) use ($request) {
+                if ($request->SommeTM > 0) {
+                    $subQuery->where('e.SommeTM', '>', 0);
+                } elseif ($request->SommeTM === '0') {
+                    $subQuery->where('e.SommeTM', '0');
+                }
+            });
+        }
+
+        if ($request->montant !== null) {
+            $dataQuery->where(function ($subQuery) use ($request) {
+                $montant = (int) $request->montant;
+                if ($montant >= 100000) {
+                    $subQuery->where('e.SommeTM', '>=', 100000);
+                } else {
+                    $ranges = [
+                        [90000, 95000], [75000, 80000], [60000, 65000], [45000, 50000],
+                        [30000, 35000], [15000, 17000], [0, 14000]
+                    ];
+                    foreach ($ranges as [$min, $max]) {
+                        if ($montant >= $min && $montant < $max) {
+                            $subQuery->whereBetween('e.SommeTM', [$min, $max]);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Obtenez toutes les données si export est activé, sinon appliquez la pagination
+        if ($isExport) {
+            $results = $dataQuery->get();
         } else {
-            $type_transfert = ['e.tm' => 1];
+            $totalRows = $dataQuery->count();
+            $results = $dataQuery->forPage($page, $perPage)->get();
         }
+
+        return response()->json([
+            'totals' => $totals,
+            'total' => $isExport ? $results->count() : $totalRows,
+            'data' => $results,
+            'current_page' => $isExport ? 1 : $page,
+            'per_page' => $isExport ? $results->count() : $perPage,
+        ]);
     }
 
-    $perPage = 1000000; // Nombre de lignes par page
-    $page = $request->query('page', 1); // Page actuelle
-
-    // Requête de base pour les sommes totales
-    $sumQuery = DB::table('etatpaiements as e')
-        ->join('villages as v', 'e.village_id', '=', 'v.id')
-        ->join('cantons', 'cantons.id', '=', 'v.canton_id')
-        ->join('communes as c', 'c.id', '=', 'cantons.commune_id')
-        ->join('prefectures', 'prefectures.id', '=', 'c.prefecture_id')
-        ->join('regions as r', 'r.id', '=', 'prefectures.region_id')
-        ->selectRaw('SUM(e.SommeSucces) as totalSommeSucces,SUM(e.SommeTM) as totalSommeTM,SUM(e.SommeMIE) as totalSommeMIE, SUM(e.SommePending) as totalSommePending, SUM(e.SommeCancel) as totalSommeCancel');
-
-    // Appliquez les filtres
-    $filters = [
-        'r.nom_reg' => $request->nom_reg,
-        'c.nom_comm' => $request->nom_comm,
-        'v.nom_vill' => $request->nom_vill,
-        'e.nom' => $request->nom,
-        'e.prenom' => $request->prenom,
-        'e.financement' => $request->financement,
-        'e.sexe' => $request->sexe,
-        'e.telephone' => $request->telephone,
-        'e.type_card' => $request->type_card,
-        'e.card_number' => $request->card_number,
-    ];
-
-    foreach ($filters as $column => $value) {
-        if (!empty($value)) {
-            $sumQuery->where($column, 'LIKE', '%' . $value . '%');
-        }
-    }
-
-    if (!empty($type_transfert)) {
-        $sumQuery->where($type_transfert);
-    }
-
-    if ($request->SommeTM !== null) {
-        $sumQuery->where(function ($subQuery) use ($request) {
-            if ($request->SommeTM > 0) {
-                $subQuery->where('e.SommeTM', '>', 0);
-            } elseif ($request->SommeTM === '0') {
-                $subQuery->where('e.SommeTM', '0');
-            }
-        });
-    }
-
-    if ($request->montant !== null) {
-        $sumQuery->where(function ($subQuery) use ($request) {
-            $montant = (int) $request->montant;
-            if ($montant >= 100000) {
-                $subQuery->where('e.SommeTM', '>=', 100000);
-            } else {
-                $ranges = [
-                    [90000, 95000],
-                    [75000, 80000],
-                    [60000, 65000],
-                    [45000, 50000],
-                    [30000, 35000],
-                    [15000, 17000],
-                    [0, 14000]
-                ];
-                foreach ($ranges as [$min, $max]) {
-                    if ($montant >= $min && $montant < $max) {
-                        $subQuery->whereBetween('e.SommeTM', [$min, $max]);
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
-    // Obtenez les sommes totales
-    $totals = $sumQuery->first();
-
-    // Requête de base pour les données paginées
-    $dataQuery = DB::table('etatpaiements as e')
-        ->join('villages as v', 'e.village_id', '=', 'v.id')
-        ->join('cantons', 'cantons.id', '=', 'v.canton_id')
-        ->join('communes as c', 'c.id', '=', 'cantons.commune_id')
-        ->join('prefectures', 'prefectures.id', '=', 'c.prefecture_id')
-        ->join('regions as r', 'r.id', '=', 'prefectures.region_id')
-        ->select('e.id', 'e.card_number', 'e.nom', 'e.prenom', 'e.sexe', 'e.telephone', 'e.financement', 'e.nbr', 'e.SommeSucces', 'e.nombre_succes','SommeTM','SommeMIE','e.SommePending', 'e.nombre_pending', 'e.SommeCancel', 'e.nombre_Cancel', 'e.nombre_Fail');
-
-    foreach ($filters as $column => $value) {
-        if (!empty($value)) {
-            $dataQuery->where($column, 'LIKE', '%' . $value . '%');
-        }
-    }
-
-    if (!empty($type_transfert)) {
-        $dataQuery->where($type_transfert);
-    }
-
-    if ($request->SommeTM !== null) {
-        $dataQuery->where(function ($subQuery) use ($request) {
-            if ($request->SommeTM > 0) {
-                $subQuery->where('e.SommeTM', '>', 0);
-            } elseif ($request->SommeTM === '0') {
-                $subQuery->where('e.SommeTM', '0');
-            }
-        });
-    }
-
-    if ($request->montant !== null) {
-        $dataQuery->where(function ($subQuery) use ($request) {
-            $montant = (int) $request->montant;
-            if ($montant >= 100000) {
-                $subQuery->where('e.SommeTM', '>=', 100000);
-            } else {
-                $ranges = [
-                    [90000, 95000],
-                    [75000, 80000],
-                    [60000, 65000],
-                    [45000, 50000],
-                    [30000, 35000],
-                    [15000, 17000],
-                    [0, 14000]
-                ];
-                foreach ($ranges as [$min, $max]) {
-                    if ($montant >= $min && $montant < $max) {
-                        $subQuery->whereBetween('e.SommeTM', [$min, $max]);
-                        break;
-                    }
-                }
-            }
-        });
-    }
-
-    // Comptez le nombre total de lignes pour la pagination
-    $totalRows = $dataQuery->count();
-
-    // Obtenez les données paginées
-    $results = $dataQuery->forPage($page, $perPage)->get();
-
-    return response()->json([
-        'totals' => $totals,
-        'total' => $totalRows,
-        'data' => $results,
-        'current_page' => $page,
-        'per_page' => $perPage,
-    ]);
-}
 
 
 

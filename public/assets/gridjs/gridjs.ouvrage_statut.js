@@ -36,7 +36,7 @@ function action_ouvrage(id, statu) {
             <i class="fa-solid fa-ellipsis-vertical"></i>
         </button>
         <div class='dropdown-menu dropdown-menu-end' style=''>
-            <a href='javascript:void(0)' id='show_ouvrage' data-url='/ouvrages/show/${id}' data-id='${id}' class='dropdown-item'>
+            <a href='javascript:void(0)' id='show_ouvrage' data-url='ouvrages/show/${id}' data-id='${id}' class='dropdown-item'>
               Voir détail
             </a>
             <a href='javascript:void(0)' id='edit_ouvrage' data-id='${id}' class='dropdown-item'>
@@ -50,37 +50,37 @@ function action_ouvrage(id, statu) {
   // Ajouter des actions supplémentaires en fonction du statut
   if (statu === "NON_DEMARRE") {
     actions += `
-      <a href='/ouvrages/update/status/${id}/EC' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/EC' class='dropdown-item'>
         Demarrage
       </a>
     `;
   } else if (statu === "EC") {
     actions += `
-      <a href='javascript:void(0);' id="demande_suspension" data-url='/sites/show/${id}'  data-id='${id}' class='dropdown-item'>
+      <a href='javascript:void(0);' id="demande_suspension" data-url='sites/show/${id}'  data-id='${id}' class='dropdown-item'>
         Suspendre
       </a>
-      <a href='/ouvrages/update/status/${id}/RT' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/RT' class='dropdown-item'>
         Réception technique
       </a>
-      <a href='/ouvrages/update/status/${id}/RP' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/RP' class='dropdown-item'>
         Réception provisoir
       </a>
-      <a href='/ouvrages/update/status/${id}/RD' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/RD' class='dropdown-item'>
         Réception définitve
       </a>
     `;
   } else if (statu === "RT") {
     actions += `
-      <a href='/ouvrages/update/status/${id}/RP' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/RP' class='dropdown-item'>
         Réception provisoir
       </a>
-      <a href='/ouvrages/update/status/${id}/RD' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/RD' class='dropdown-item'>
         Réception définitve
       </a>
     `;
   }else if (statu === "RP") {
     actions += `
-      <a href='/ouvrages/update/status/${id}/RD' class='dropdown-item'>
+      <a href='ouvrages/update/status/${id}/RD' class='dropdown-item'>
         Réception définitve
       </a>
     `;
@@ -96,15 +96,7 @@ function action_ouvrage(id, statu) {
 }
 
 function rendtableau_ouvrage(nom_reg, nom_comm, nom_ouvrage, nom_projet, nom_type, nom_fin, statu) {
-  let url = '';
-  let currentUrl = window.location.pathname; // Obtient l'URL courante
-  if(/^\/ouvrages\/statut\/.*/.test(currentUrl)){
-    let variable = document.getElementById('statu_ouvrage').value;
-    url = `/ouvrages/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_ouvrage=${nom_ouvrage}&nom_projet=${nom_projet}&nom_type=${nom_type}&nom_fin=${nom_fin}&statu=${variable}`
-  }else{
-    url = `/ouvrages/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_ouvrage=${nom_ouvrage}&nom_projet=${nom_projet}&nom_type=${nom_type}&nom_fin=${nom_fin}&statu=${statu}`;
-  }
-fetch(url)
+fetch(`ouvrages/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_ouvrage=${nom_ouvrage}&nom_projet=${nom_projet}&nom_type=${nom_type}&nom_fin=${nom_fin}&statu=${statu}`)
   .then(response => response.json())
   .then(data => {
       let tableDataa = data.data.map(item => [

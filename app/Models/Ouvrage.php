@@ -38,7 +38,8 @@ class Ouvrage extends Model
                   'site_id',
                   'projet_id',
                   'financement_id',
-                  'typeouvrage_id'
+                  'typeouvrage_id',
+                  'statu'
               ];
 
       // Function de vérification 

@@ -7,7 +7,6 @@
                 $('.modal-title').text('Détail du site n°'+id);
                 $('.show_site_modal').modal('show');
                     $('#show_id').text(data.id);
-                    $('#show_statu').text(data.statu);
                     $('#show_nom_site').text(data.nom_site);
                     $('#show_nom_vill').text(data.nom_vill);                    
                     $('#show_nom_cant').text(data.nom_cant);                    
@@ -93,34 +92,6 @@
             $('.delete_site_modal').modal('hide');
             location.reload(true);
         });
-    });
-
-    $('body').on('click', '#demande_suspension', function(e){
-            e.preventDefault();
-            let id = $(this).data('id');
-            $('#site_id').val(id);
-                $('.modal-title').text('Nouvelle demande de suspension');
-                $('.add_demande_modal').modal('show');
-                $('#form')[0].reset();
-        });
-
-    // Ajout de demande de suspension du site
-    $('#add_demade_btn').on('submit', function(e){
-        e.preventDefault();
-        var form = $(this).serialize();
-        var url = $(this).attr('action');
-        $.ajax({
-            type: 'post',
-            url: url,
-            data: form,
-            dataType: 'json',
-            success: function(){
-                $('#form')[0].reset();
-                $('.add_demande_modal').modal('hide');
-                $('#form')[0].reset();
-                index_site();
-            }
-        })
     });
 
     $('body').on('click', '#telecharger_site', function(){

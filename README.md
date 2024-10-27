@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# siganadeb
+Dpot pour sig anadeb
+=======
 
 # Tech-Admin | Laravel 8 + Bootstrap 4 
 
@@ -88,3 +92,4 @@ If you have any feedback, please reach out to us at techtoolindia@gmail.com
 
 For support, email techtoolindia@gmail.com or join our facebook chanel https://www.facebook.com/techtoolindia.
 
+>>>>>>> 3a7fc66 (Initial commit)

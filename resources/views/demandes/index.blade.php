@@ -94,6 +94,7 @@
             // Gestionnaire de clic sur le bouton "Afficher avec paramètres"
             document.getElementById('btnDemande').addEventListener('click', function() {
                 // Appeler la fonction avec des paramètres
+                let nom_ouvrage = document.getElementById('nom_ouvrage').value;
                 let titre = document.getElementById('titre').value;
                 let user = document.getElementById('user').value;
                 let nom_reg = document.getElementById('nom_reg').value;
@@ -103,7 +104,7 @@
                 let date_demarre_debut = document.getElementById('date_demarre_debut').value;
                 let date_demarre_fin = document.getElementById('date_demarre_fin').value;
 
-                rendtableau_demande(nom_reg, nom_comm, nom_site,statu,user,titre,date_demarre_debut,date_demarre_fin);
+                rendtableau_demande(nom_reg, nom_comm, nom_site,statu,user,titre,date_demarre_debut,date_demarre_fin,nom_ouvrage);
                 
             });
         });
@@ -118,7 +119,8 @@
             let date_demarre_fin = "";
             let user = "";
             let titre = "";
-            rendtableau_demande(nom_reg, nom_comm, nom_site,statu,user,titre,date_demarre_debut,date_demarre_fin);
+            let nom_ouvrage = "";
+            rendtableau_demande(nom_reg, nom_comm, nom_site,statu,user,titre,date_demarre_debut,date_demarre_fin,nom_ouvrage);
         }        
     </script>
 @endsection
