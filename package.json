@@ -1,0 +1,38 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "prod": "npm run production",
+        "production": "mix --production"
+    },
+    "devDependencies": {
+        "axios": "^1.7.2",
+        "bootstrap": "^4.6.0",
+        "css-loader": "^7.1.2",
+        "jquery": "^3.6",
+        "laravel-mix": "^6.0.6",
+        "lodash": "^4.17.19",
+        "mini-css-extract-plugin": "^2.9.0",
+        "popper.js": "^1.16.1",
+        "postcss": "^8.1.14",
+        "resolve-url-loader": "^5.0.0",
+        "sass": "^1.32.11",
+        "sass-loader": "^11.0.1",
+        "style-loader": "^4.0.0",
+        "terser-webpack-plugin": "^5.3.10",
+        "vue": "^2.6.12",
+        "vue-loader": "^17.4.2",
+        "vue-template-compiler": "^2.6.12",
+        "webpack": "^5.92.1",
+        "webpack-cli": "^5.1.4"
+    },
+    "dependencies": {
+        "@emotion/core": "^11.0.0",
+        "@emotion/css": "^11.10.6",
+        "@emotion/styled": "^11.10.6"
+    }
+}

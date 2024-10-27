@@ -1,0 +1,110 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Votre CSS/SCSS principal
+
+body{
+    background-color: $body-bg;
+}
+
+.alert-success, .btn-outline-success {
+    --bs-btn-color: $success;
+    --bs-btn-border-color: $success;
+    --bs-btn-hover-bg: $success;
+    --bs-btn-hover-border-color: $success;
+    --bs-btn-active-bg: $success;
+    --bs-btn-active-border-color: $success;
+    --bs-btn-disabled-color: $success;
+    --bs-btn-disabled-border-color: $success;
+}
+
+.alert-danger, .btn-outline-danger {
+    --bs-btn-color: $danger;
+    --bs-btn-border-color: $danger;
+    --bs-btn-hover-bg: $danger;
+    --bs-btn-hover-border-color: $danger;
+    --bs-btn-active-bg: $danger;
+    --bs-btn-active-border-color: $danger;
+    --bs-btn-disabled-color: $danger;
+    --bs-btn-disabled-border-color: $danger;
+}
+
+.alert-warning, .btn-outline-warning {
+    --bs-btn-color: $warning;
+    --bs-btn-border-color: $warning;
+    --bs-btn-hover-bg: $warning;
+    --bs-btn-hover-border-color: $warning;
+    --bs-btn-active-bg: $warning;
+    --bs-btn-active-border-color: $warning;
+    --bs-btn-disabled-color: $warning;
+    --bs-btn-disabled-border-color: $warning;
+}
+
+.alert-info, .btn-outline-info {
+    --bs-btn-color: $info;
+    --bs-btn-border-color: $info;
+    --bs-btn-hover-bg: $info;
+    --bs-btn-hover-border-color: $info;
+    --bs-btn-active-bg: $info;
+    --bs-btn-active-border-color: $info;
+    --bs-btn-disabled-color: $info;
+    --bs-btn-disabled-border-color: $info;
+}
+
+.btn-outline-primary{
+    --bs-btn-color: $primary;
+    --bs-btn-border-color: $primary;
+    --bs-btn-hover-bg: $primary;
+    --bs-btn-hover-border-color: $primary;
+    --bs-btn-active-bg: $primary;
+    --bs-btn-active-border-color: $primary;
+    --bs-btn-disabled-color: $primary;
+    --bs-btn-disabled-border-color: $primary;
+}
+.btn-outline-secondary{
+    --bs-btn-color: $secondary;
+    --bs-btn-border-color: $secondary;
+    --bs-btn-hover-bg: $secondary;
+    --bs-btn-hover-border-color: $secondary;
+    --bs-btn-active-bg: $secondary;
+    --bs-btn-active-border-color: $secondary;
+    --bs-btn-disabled-color: $secondary;
+    --bs-btn-disabled-border-color: $secondary;
+}
+
+.btn-outline-light{
+    --bs-btn-color: $light;
+    --bs-btn-border-color: $light;
+    --bs-btn-hover-bg: $light;
+    --bs-btn-hover-border-color: $light;
+    --bs-btn-active-bg: $light;
+    --bs-btn-active-border-color: $light;
+    --bs-btn-disabled-color: $light;
+    --bs-btn-disabled-border-color: $light;
+}
+.btn-outline-dark{
+    --bs-btn-color: $dark;
+    --bs-btn-border-color: $dark;
+    --bs-btn-hover-bg: $dark;
+    --bs-btn-hover-border-color: $dark;
+    --bs-btn-active-bg: $dark;
+    --bs-btn-active-border-color: $dark;
+    --bs-btn-disabled-color: $dark;
+    --bs-btn-disabled-border-color: $dark;
+}
+
+.bg-gradient-primary-to-secondary{
+    background-color: $primary !important;
+    background-image: linear-gradient(135deg, $primary 0, rgba(105, 0, 199, .8) 100%) !important;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: $primary;
+}
+
+.card:not([class*=bg-]) .card-header {
+    color: $primary;
+}

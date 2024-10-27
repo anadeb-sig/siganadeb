@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+body {
+  background-color: #f2f6fc;
+}
+
+.alert-success, .btn-outline-success {
+  --bs-btn-color: #3ac97c !important;
+  --bs-btn-border-color: #3ac97c !important;
+  --bs-btn-hover-bg: #3ac97c !important;
+  --bs-btn-hover-border-color: #3ac97c !important;
+  --bs-btn-active-bg: #3ac97c !important;
+  --bs-btn-active-border-color: #3ac97c !important;
+  --bs-btn-disabled-color: #3ac97c !important;
+  --bs-btn-disabled-border-color: #3ac97c !important;
+}
+
+.alert-danger, .btn-outline-danger {
+  --bs-btn-color: #d73f30 !important;
+  --bs-btn-border-color: #d73f30 !important;
+  --bs-btn-hover-bg: #d73f30 !important;
+  --bs-btn-hover-border-color: #d73f30 !important;
+  --bs-btn-active-bg: #d73f30 !important;
+  --bs-btn-active-border-color: #d73f30 !important;
+  --bs-btn-disabled-color: #d73f30 !important;
+  --bs-btn-disabled-border-color: #d73f30 !important;
+}
+
+.alert-warning, .btn-outline-warning {
+  --bs-btn-color: #ebb20c !important;
+  --bs-btn-border-color: #ebb20c !important;
+  --bs-btn-hover-bg: #ebb20c !important;
+  --bs-btn-hover-border-color: #ebb20c !important;
+  --bs-btn-active-bg: #ebb20c !important;
+  --bs-btn-active-border-color: #ebb20c !important;
+  --bs-btn-disabled-color: #ebb20c !important;
+  --bs-btn-disabled-border-color: #ebb20c !important;
+}
+
+.alert-info, .btn-outline-info {
+  --bs-btn-color: #9d46cd !important;
+  --bs-btn-border-color: #9d46cd !important;
+  --bs-btn-hover-bg: #9d46cd !important;
+  --bs-btn-hover-border-color: #9d46cd !important;
+  --bs-btn-active-bg: #9d46cd !important;
+  --bs-btn-active-border-color: #9d46cd !important;
+  --bs-btn-disabled-color: #9d46cd !important;
+  --bs-btn-disabled-border-color: #9d46cd !important;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #06794f !important;
+  --bs-btn-border-color: #06794f !important;
+  --bs-btn-hover-bg: #06794f !important;
+  --bs-btn-hover-border-color: #06794f !important;
+  --bs-btn-active-bg: #06794f !important;
+  --bs-btn-active-border-color: #06794f !important;
+  --bs-btn-disabled-color: #06794f !important;
+  --bs-btn-disabled-border-color: #06794f !important;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: #0fa28b !important;
+  --bs-btn-border-color: #0fa28b !important;
+  --bs-btn-hover-bg: #0fa28b !important;
+  --bs-btn-hover-border-color: #0fa28b !important;
+  --bs-btn-active-bg: #0fa28b !important;
+  --bs-btn-active-border-color: #0fa28b !important;
+  --bs-btn-disabled-color: #0fa28b !important;
+  --bs-btn-disabled-border-color: #0fa28b !important;
+}
+
+.btn-outline-light {
+  --bs-btn-color: light !important;
+  --bs-btn-border-color: light !important;
+  --bs-btn-hover-bg: light !important;
+  --bs-btn-hover-border-color: light !important;
+  --bs-btn-active-bg: light !important;
+  --bs-btn-active-border-color: light !important;
+  --bs-btn-disabled-color: light !important;
+  --bs-btn-disabled-border-color: light !important;
+}
+
+.btn-outline-dark {
+  --bs-btn-color: #000000 !important;
+  --bs-btn-border-color: #000000 !important;
+  --bs-btn-hover-bg: #000000 !important;
+  --bs-btn-hover-border-color: #000000 !important;
+  --bs-btn-active-bg: #000000 !important;
+  --bs-btn-active-border-color: #000000 !important;
+  --bs-btn-disabled-color: #000000 !important;
+  --bs-btn-disabled-border-color: #000000 !important;
+}
+
+.bg-gradient-primary-to-secondary {
+  background-color: #06794f !important;
+  background-image: linear-gradient(135deg, #06794f 0, rgb(23 99 80) 100%) !important;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  background-color: #06794f !important;
+}
+
+.card:not([class*=bg-]) .card-header {
+  color: #06794f !important;
+}
+
+.sidenav-light .sidenav-menu .nav-link.active {
+  color: #06794f !important;
+}
+
+.sidenav-light .sidenav-menu .nav-link:hover {
+  color: #06794f !important;
+}
+
+.sidenav-light .sidenav-menu .nav-link:hover {
+  color: #06794f!important;
+}
+
+.nav-wizard .nav-link .wizard-step-icon {
+  background-color: #06794f!important;
+}
+
+.nav-wizard .nav-link .wizard-step-text .wizard-step-text-name{
+  color: #06794f!important;
+}
+
+.nav-wizard .nav-link.active .wizard-step-icon {
+  background-color: #fff!important;
+  color: #06794f!important;
+}
+
+.nav-wizard .nav-link.active .wizard-step-text .wizard-step-text-name {
+  color: #fff !important;
+}
+
+.accordion{
+  --bs-accordion-active-color:#06794f!important;
+}
+
+.text_export {
+  color: #06794f!important;
+}
+
+/*# sourceMappingURL=app.css.map */

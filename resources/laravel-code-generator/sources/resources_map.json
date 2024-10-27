@@ -1,0 +1,87 @@
+[
+    {
+        "model-name": "villages",
+        "resource-file": "villages.json",
+        "table-name": "villages"
+    },
+    {
+        "model-name": "Ecole",
+        "resource-file": "ecoles.json",
+        "table-name": "ecoles"
+    },
+    {
+        "model-name": "Classe",
+        "resource-file": "classes.json",
+        "table-name": "classes"
+    },
+    {
+        "model-name": "Menu",
+        "resource-file": "menus.json",
+        "table-name": "menus"
+    },
+    {
+        "model-name": "Repas",
+        "resource-file": "repas.json",
+        "table-name": "repas"
+    },
+    {
+        "model-name": "Canton",
+        "resource-file": "cantons.json",
+        "table-name": "cantons"
+    },
+    {
+        "model-name": "Commune",
+        "resource-file": "communes.json",
+        "table-name": "communes"
+    },
+    {
+        "model-name": "Financement",
+        "resource-file": "financements.json",
+        "table-name": "financements"
+    },
+    {
+        "model-name": "Prefecture",
+        "resource-file": "prefectures.json",
+        "table-name": "prefectures"
+    },
+    {
+        "model-name": "Region",
+        "resource-file": "regions.json",
+        "table-name": "regions"
+    },
+    {
+        "model-name": "Visite",
+        "resource-file": "visites.json",
+        "table-name": "visites"
+    },
+    {
+        "model-name": "Contrat",
+        "resource-file": "contrats.json",
+        "table-name": "contrats"
+    },
+    {
+        "model-name": "Entreprise",
+        "resource-file": "entreprises.json",
+        "table-name": "entreprises"
+    },
+    {
+        "model-name": "Typeouvrage",
+        "resource-file": "typeouvrages.json",
+        "table-name": "typeouvrages"
+    },
+    {
+        "model-name": "Ouvrage",
+        "resource-file": "ouvrages.json",
+        "table-name": "ouvrages"
+    },
+    {
+        "model-name": "Signer",
+        "resource-file": "signers.json",
+        "table-name": "signers"
+    },
+    {
+        "model-name": "Suivi",
+        "resource-file": "suivis.json",
+        "table-name": "suivis"
+    }
+]
