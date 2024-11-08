@@ -1,5 +1,5 @@
-function rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum) {
-    fetch(`/fsb_syntheses/fetch_beneficiaire?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_vill=${nom_vill}&financement=${financement}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&cardNum=${cardNum}`)
+function rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum,projet_id) {
+    fetch(`/fsb_syntheses/fetch_beneficiaire?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_vill=${nom_vill}&financement=${financement}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&cardNum=${cardNum}&projet_id=${projet_id}`)
     .then(response => response.json())
     .then(data => {
         const somme_montantEnv = data.totals.somme_montantEnv || 0;
@@ -49,6 +49,8 @@ function rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,n
             formatter.format(item.montant6),
             formatter.format(item.frais6)
         ]);
+
+        //console.log(tableDataa);
 
         const myGrid = new gridjs.Grid({
             columns: [

@@ -62,12 +62,12 @@
                                 </div>
                                 <div class="row mt-4">
                                     <div class="col-xl-4 {{ $errors->has('nom_fin') ? 'has-error' : '' }}">
-                                        <label for="nom_fin" class="control-label">Type de financement</label>
+                                        <label for="nom_fin" class="control-label">Projet /Programme</label>
                                         <select class="form-control w-100" name="projet_id" id="projet_id" value="">
-                                            <option value="">Rechercher par type de financement</option>
-                                            <option value="1">FSB NOVISSI</option>
-                                            <option value="3">FSB NOVISSI MARITIME</option>
-                                            <option value="4">FSB NOVISSI EXTENTION</option>
+                                            <option value="" disabled selected>Rechercher par projet</option>
+                                            @foreach($projets as $projet)
+                                                <option value="{{ $projet->id }}">{{ $projet->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-xl-4">
@@ -94,13 +94,13 @@
                                     </div>
                                     <div class="col-xl-3">
                                         <div class="modal-footer mt-4">
-                                            <button id="btnMenage" type="button" class="btn btn-outline-primary recherche">
-                                                <i class="fa fa-search"></i> &nbsp;Rechercher
-                                            </button>
-                                            &nbsp;&nbsp;
                                             <a href="{{ route('beneficiaires.index') }}" type="button" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
                                             </a>
+                                            &nbsp;&nbsp;
+                                            <button id="btnMenage" type="button" class="btn btn-outline-primary recherche">
+                                                <i class="fa fa-search"></i> &nbsp;Rechercher
+                                            </button>
                                         </div> 
                                     </div>
                                 </div>          

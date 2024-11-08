@@ -41,12 +41,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xl-4 {{ $errors->has('nom_fin') ? 'has-error' : '' }}">
-                                        <label for="nom_fin" class="control-label">Type de financement</label>
-                                        <select class="form-control w-100" name="nature_projet" id="nature_projet" value="">
-                                            <option value="">Rechercher par type de financement</option>
-                                            <option value="FSB_NOVISSI">FSB NOVISSI</option>
-                                            <option value="FSB_NOVISSI_MARITIME">FSB NOVISSI MARITIME</option>
-                                            <option value="FSB_NOVISSI_EXT">FSB NOVISSI EXTENTION</option>
+                                        <label for="nom_fin" class="control-label">Projet /Programme</label>
+                                        <select class="form-control w-100" name="projet_id" id="projet_id" value="">
+                                            <option value="" disabled selected>Rechercher par projet</option>
+                                            @foreach($projets as $projet)
+                                                <option value="{{ $projet->id }}">{{ $projet->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-xl-4">
@@ -77,13 +77,13 @@
                                     </div>
                                     <div class="col-xl-3">
                                         <div class="modal-footer mt-4">
-                                            <button id="btnMenage" type="button" class="btn btn-outline-primary recherche">
-                                                <i class="fa fa-search"></i> &nbsp;Rechercher
-                                            </button>
-                                            &nbsp;&nbsp;
                                             <a href="{{ route('menages.index') }}" type="button" class="btn btn-outline-danger">
                                                 <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
                                             </a>
+                                            &nbsp;&nbsp;
+                                            <button id="btnMenage" type="button" class="btn btn-outline-primary recherche">
+                                                <i class="fa fa-search"></i> &nbsp;Rechercher
+                                            </button>
                                         </div>  
                                     </div>
                                 </div>         
@@ -115,7 +115,6 @@
     </div>
 
     <script>
-
         document.addEventListener('DOMContentLoaded', function() {
             // Fonction par défaut sans paramètres
             loaddatauser_menage();
@@ -125,13 +124,13 @@
                 let nom_reg = document.getElementById('nom_reg').value;
                 let nom_vill = document.getElementById('nom_vill').value;
                 let nom_comm = document.getElementById('nom_comm').value;
-                let nature_projet = document.getElementById('nature_projet').value;
+                let projet_id = document.getElementById('projet_id').value;
                 let id = document.getElementById('idMenage').value;
                 let rang = document.getElementById('rang').value;
                 let hhead = document.getElementById('hhead').value;
                 let sexe = document.getElementById('sexe').value;
                 let phone_member1 = document.getElementById('phone_member1').value;
-                rendtableau_menage(nom_reg, nom_comm, nom_vill, id, nature_projet, rang, hhead, sexe, phone_member1);
+                rendtableau_menage(nom_reg, nom_comm, nom_vill, id, projet_id, rang, hhead, sexe, phone_member1);
                 
             });
         });
@@ -140,13 +139,13 @@
         let nom_reg = "";
             let nom_vill = "";
             let nom_comm = "";
-            let nature_projet = "";
+            let projet_id = "";
             let id = "";
             let rang = "";
             let hhead = "";
             let sexe = "";
             let phone_member1 = "";
-            rendtableau_menage(nom_reg, nom_comm, nom_vill, id, nature_projet, rang, hhead, sexe, phone_member1);
+            rendtableau_menage(nom_reg, nom_comm, nom_vill, id, projet_id, rang, hhead, sexe, phone_member1);
         }        
     </script>
 @endsection

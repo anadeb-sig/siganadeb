@@ -44,17 +44,26 @@
                                     </div>
                                 </div>
                                 <div class="row mt-4">
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
                                         <label for="nom_cant" class="control-label">Canton</label>
                                         <input class="form-control w-100 majuscules" id="nom_cant" name="nom_cant" type="text" placeholder="exemple: TINDJASSE ..." />
                                     </div>
-                                    <div class="col-xl-4 {{ $errors->has('nom_vill') ? 'has-error' : '' }}">
+                                    <div class="col-xl-3 {{ $errors->has('nom_vill') ? 'has-error' : '' }}">
                                         <label for="nom_vill" class="control-label">Village /Quartier</label>
                                         <input class="form-control w-100" id="nom_vill" name="nom_vill" type="text" placeholder="exemple: TINDJA..." />
                                     </div>
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
                                         <label for="rang">Financement</label>
                                         <input class="form-control" type="text" id='financement'  name="financement" placeholder="exemple: BM">
+                                    </div>
+                                    <div class="col-xl-3">
+                                        <label for="nom_fin" class="control-label">Projet /Programme</label>
+                                        <select class="form-control w-100" name="projet_id" id="projet_id" value="">
+                                            <option value="" disabled selected>Rechercher par projet</option>
+                                            @foreach($projets as $projet)
+                                                <option value="{{ $projet->id }}">{{ $projet->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mt-4">
@@ -78,13 +87,13 @@
                                     </div>
                                     <div class="col-xl-5"></div>
                                     <div class="col-xl-3 modal-footer mt-4">
-                                        <button id="btnEtatpaiement" type="button" class="btn btn-outline-primary recherche">
-                                            <i class="fa fa-search"></i> &nbsp;Rechercher
-                                        </button>
-                                        &nbsp;&nbsp;
                                         <a href="{{ route('fsb_syntheses.par_beneficiaire') }}" type="button" class="btn btn-outline-danger">
                                             <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
                                         </a>
+                                        &nbsp;&nbsp;
+                                        <button id="btnEtatpaiement" type="button" class="btn btn-outline-primary recherche">
+                                            <i class="fa fa-search"></i> &nbsp;Rechercher
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -118,7 +127,8 @@
                 let prenom = document.getElementById('prenom').value;
                 let telephone = document.getElementById('telephone').value;
                 let cardNum = document.getElementById('cardNum').value;
-                rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum);
+                let projet_id = document.getElementById('projet_id').value;
+                rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum,projet_id);
                 
             });
         });
@@ -134,8 +144,8 @@
             let prenom= ""; 
             let telephone= "";
             let cardNum= "";
-
-            rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum);
+            let projet_id = "";
+            rendtableau_paiement_beneficiaire(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,nom,prenom, telephone,cardNum,projet_id);
         } 
     </script>
 
@@ -162,7 +172,6 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data.data.length); // Affiche les données brutes
                     if (data && data.data) {
                         exporterVersExcel(data.data); // Exporter toutes les données récupérées
                     } else {

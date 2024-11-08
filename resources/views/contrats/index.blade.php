@@ -140,7 +140,7 @@
             var nombreChamps = document.querySelectorAll('.groupe-champs').length;
             if (nombreChamps < 11) {
                 var nouveauChamp = '<div class="groupe-champs">';
-                nouveauChamp += '<div class="row">';
+                nouveauChamp += '<hr class="mt-0"><div class="row">';
                 nouveauChamp += '<div class="col-xl-6">'+
                         '<label for="region_id" class="control-label">Région</label>'+
                         '<select class="form-control region-comm" id="region_comm'+nombreChamps+'" required="true">'+
@@ -163,7 +163,7 @@
                 nouveauChamp += '<div class="row mt-3">'+
                     '<div class="col-xl-12">'+
                         '<label for="site_id" class="control-label">Site à construire</label>'+
-                        '<select class="form-control site-comm" id="site_comm'+nombreChamps+'" name="site_id[]" disabled required="true">'+
+                        '<select class="form-control site-comm" id="site_comm'+nombreChamps+'" disabled required="true">'+
                             '<option value="" disabled selected>Sélectionnez le site à construire</option>'+
                         '</select>'+
                     '</div>'+

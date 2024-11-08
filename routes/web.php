@@ -45,8 +45,6 @@ Auth::routes(['verify' => true]);
 
 Auth::routes(['register' => false]);
 
-
-
 Route::get('/logout', function () {
     Auth::logout();
     return redirect('/login');
@@ -372,7 +370,6 @@ Route::prefix('sites')->name('sites.')->group(function()
     Route::delete('/{site}',[SiteController::class, 'destroy']);
     Route::get('fetch', [SiteController::class, 'fetch']);
     Route::get('ouvrage_site/{site}',[SiteController::class, 'ouvrage_site']);
-    Route::get('/update/status/{id}/{status}', [SiteController::class, 'updateStatus'])->name('status');
     Route::get('ouvcontrat_sign/{commune}',[SiteController::class, 'ouvcontrat_sign']);
 
     Route::post('import', [SiteController::class, 'import'])->name('import');
@@ -393,11 +390,13 @@ Route::prefix('ouvrages')->name('ouvrages.')->group(function()
     Route::put('ouvrage/', [OuvragesController::class, 'update'])->name('update');
     Route::delete('/{ouvrage}',[OuvragesController::class, 'destroy'])->name('destroy');
     Route::get('get-sign/{commune}',[OuvragesController::class, 'get_sign']);
-    //Route::get('get-options/{canton}',[OuvragesController::class, 'get_option']);
     Route::get('fetch', [OuvragesController::class, 'fetch']);
+    Route::get('statistiques', [OuvragesController::class, 'statistique_ouvrages']);
+    Route::get('statut/{statu}', [OuvragesController::class, 'index_statut'])->name('statut');
     Route::post('import', [OuvragesController::class, 'import'])->name('import');
 
-    
+    Route::get('/update/status/{id}/{status}', [OuvragesController::class, 'updateStatus'])->name('status');
+
     Route::get('telecharger', [OuvragesController::class, 'telecharger']);
     Route::get('format_csv', [OuvragesController::class, 'format_csv'])->name('format_csv');
 });

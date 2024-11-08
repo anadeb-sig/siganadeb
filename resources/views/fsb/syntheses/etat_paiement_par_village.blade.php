@@ -30,23 +30,32 @@
                         <div class="accordion-body">
                             <form method="get" action="" accept-charset="UTF-8">
                                 <div class="row mt-4">
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
                                         <label for="nom_reg" class="control-label">Région</label>
                                         <input class="form-control w-100 majuscules" id="nom_reg" name="nom_reg" type="text" placeholder="exemple: CENTRALE ..." />
                                     </div>
-                                    <div class="col-xl-4 {{ $errors->has('nom_pref') ? 'has-error' : '' }}">
+                                    <div class="col-xl-3 {{ $errors->has('nom_pref') ? 'has-error' : '' }}">
                                         <label for="nom_pref" class="control-label">Préfecture</label>
                                         <input class="form-control w-100" id="nom_pref" name="nom_pref" type="text" placeholder="exemple: MO..." />
                                     </div>
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
                                         <label for="commune_id" class="control-label">Commune</label>
                                         <input class="form-control w-100 majuscules" id="nom_comm" name="nom_comm" type="text" placeholder="exemple: MO 2  ..." />
+                                    </div>
+                                    <div class="col-xl-3">
+                                        <label for="nom_cant" class="control-label">Canton</label>
+                                        <input class="form-control w-100 majuscules" id="nom_cant" name="nom_cant" type="text" placeholder="exemple: TINDJASSE ..." />
                                     </div>
                                 </div>
                                 <div class="row mt-4">
                                     <div class="col-xl-3">
-                                        <label for="nom_cant" class="control-label">Canton</label>
-                                        <input class="form-control w-100 majuscules" id="nom_cant" name="nom_cant" type="text" placeholder="exemple: TINDJASSE ..." />
+                                        <label for="nom_fin" class="control-label">Projet /Programme</label>
+                                        <select class="form-control w-100" name="projet_id" id="projet_id" value="">
+                                            <option value="" disabled selected>Rechercher par projet</option>
+                                            @foreach($projets as $projet)
+                                                <option value="{{ $projet->id }}">{{ $projet->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="col-xl-3 {{ $errors->has('nom_vill') ? 'has-error' : '' }}">
                                         <label for="nom_vill" class="control-label">Village /Quartier</label>
@@ -57,13 +66,13 @@
                                         <input class="form-control" type="text" id='financement'  name="financement" placeholder="exemple: BM">
                                     </div>
                                     <div class="col-xl-3 modal-footer mt-4">
-                                        <button id="btnEtatpaiement" type="button" class="btn btn-outline-primary recherche">
-                                            <i class="fa fa-search"></i> &nbsp;Rechercher
-                                        </button>
-                                        &nbsp;&nbsp;
                                         <a href="{{ route('fsb_syntheses.par_village') }}" type="button" class="btn btn-outline-danger">
                                             <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
                                         </a>
+                                        &nbsp;&nbsp;
+                                        <button id="btnEtatpaiement" type="button" class="btn btn-outline-primary recherche">
+                                            <i class="fa fa-search"></i> &nbsp;Rechercher
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -92,8 +101,9 @@
                 let nom_comm = document.getElementById('nom_comm').value;
                 let nom_cant = document.getElementById('nom_cant').value;
                 let nom_vill = document.getElementById('nom_vill').value;
+                let projet_id = document.getElementById('projet_id').value;
                 let financement = document.getElementById('financement').value;
-                rendtableau_paiement_village(nom_reg, nom_pref, nom_comm, nom_cant, nom_vill, financement);
+                rendtableau_paiement_village(nom_reg, nom_pref, nom_comm, nom_cant, nom_vill, financement,projet_id);
                 
             });
         });
@@ -105,7 +115,8 @@
             let nom_cant = "";
             let nom_vill = "";
             let financement = "";
-            rendtableau_paiement_village(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement);
+            let projet_id = "";
+            rendtableau_paiement_village(nom_reg,nom_pref, nom_comm,nom_cant,nom_vill, financement,projet_id);
         } 
     </script>
 
@@ -117,10 +128,11 @@
             let nom_comm = document.getElementById('nom_comm').value;
             let nom_cant = document.getElementById('nom_cant').value;
             let nom_vill = document.getElementById('nom_vill').value;
+            let projet_id = document.getElementById('projet_id').value;
             let financement = document.getElementById('financement').value;
 
             // Appel à l'API pour récupérer les données
-            fetch(`/fsb_syntheses/fetch?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_vill=${nom_vill}&financement=${financement}&export=true`)
+            fetch(`/fsb_syntheses/fetch?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_vill=${nom_vill}&financement=${financement}&projet_id=${projet_id}&export=true`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Erreur HTTP ! statut : ${response.status}`);
@@ -128,7 +140,6 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data.data.length); // Affiche les données brutes
                     if (data && data.data) {
                         exporterVersExcel(data.data); // Exporter toutes les données récupérées
                     } else {

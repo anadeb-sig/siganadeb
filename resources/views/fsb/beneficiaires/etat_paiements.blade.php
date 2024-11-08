@@ -66,15 +66,24 @@
                                     </div>
                                 </div>
                                 <div class="row mt-4">
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
+                                        <label for="nom_fin" class="control-label">Projet /Programme</label>
+                                        <select class="form-control w-100" name="projet_id" id="projet_id" value="">
+                                            <option value="" disabled selected>Rechercher par projet</option>
+                                            @foreach($projets as $projet)
+                                                <option value="{{ $projet->id }}">{{ $projet->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-3">
                                         <label for="Sexe"  class="control-label">Type de la pièce d'identité</label>
                                         <input class="form-control w-100" name="type_card" id="type_card" placeholder="Exple:CE, RID, ...">
                                     </div>
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
                                         <label for="card_number">Numéro de la carte d'identité</label>
                                         <input class="form-control" type="text" id='card_number'  name="card_number" placeholder="Exple: 5-106-02-03-06-01-01-00213">
                                     </div>
-                                    <div class="col-xl-4">
+                                    <div class="col-xl-3">
                                         <label for="rang">Financement</label>
                                         <input class="form-control" type="text" id='financement'  name="financement" placeholder="exemple: BM">
                                     </div>
@@ -111,13 +120,13 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-3 modal-footer mt-4">
-                                        <button id="btnEtatpaiement" type="button" class="btn btn-outline-primary recherche">
-                                            <i class="fa fa-search"></i> &nbsp;Rechercher
-                                        </button>
-                                        &nbsp;&nbsp;
                                         <a href="{{ route('beneficiaires.etat_paiements') }}" type="button" class="btn btn-outline-danger">
                                             <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
                                         </a>
+                                        &nbsp;&nbsp;
+                                        <button id="btnEtatpaiement" type="button" class="btn btn-outline-primary recherche">
+                                            <i class="fa fa-search"></i> &nbsp;Rechercher
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -167,7 +176,8 @@
                 let SommeTM = document.getElementById('SommeTM').value;
                 let montant = document.getElementById('montant').value;
                 let type_transfert = document.getElementById('type_transfert').value;
-                rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone, sexe, type_card, card_number,financement,SommeTM,montant,type_transfert);
+                let projet_id = document.getElementById('projet_id').value;
+                rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone, sexe, type_card, card_number,financement,SommeTM,montant,type_transfert,projet_id);
                 
             });
         });
@@ -186,7 +196,8 @@
             let SommeTM = "";
             let montant = "";
             let type_transfert = "";
-            rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone, sexe, type_card, card_number,financement,SommeTM,montant,type_transfert);
+            let projet_id = "";
+            rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone, sexe, type_card, card_number,financement,SommeTM,montant,type_transfert,projet_id);
         } 
         
         
@@ -223,9 +234,10 @@
                 let SommeTM = document.getElementById('SommeTM').value;
                 let montant = document.getElementById('montant').value;
                 let type_transfert = document.getElementById('type_transfert').value;
+                let projet_id = document.getElementById('projet_id').value;
 
             // Appel à l'API pour récupérer les données
-            fetch(`/beneficiaires/fetch_etat_paiements?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&sexe=${sexe}&type_card=${type_card}&card_number=${card_number}&financement=${financement}&SommeTM=${SommeTM}&montant=${montant}&type_transfert=${type_transfert}&export=true`)
+            fetch(`/beneficiaires/fetch_etat_paiements?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&sexe=${sexe}&type_card=${type_card}&card_number=${card_number}&financement=${financement}&SommeTM=${SommeTM}&montant=${montant}&type_transfert=${type_transfert}&projet_id=${projet_id}&export=true`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Erreur HTTP ! statut : ${response.status}`);

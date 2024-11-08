@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Beneficiaire;
+use App\Models\Financement;
 use Illuminate\Http\Request;
 use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,14 @@ class HomeController extends Controller
 
     public function index_infra()
     {
-        return view('home_infra');
+        
+        $projets = DB::table('projets')
+                ->whereIn('name', ['INFRASTRUCTURE/COSO', 'INFRASTRUCTURE/CLASSIQUE'])
+                ->get();
+
+        $Financements = Financement::all();
+
+        return view('home_infra', compact('projets','Financements'));
     }
 
     public function index_fsb()

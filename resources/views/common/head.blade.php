@@ -60,7 +60,7 @@
         .gridjs-table{
             width: 100%;
         }
-        .search_output .projet select{
+        /* .search_output .projet select{
             border-radius: 20px 0 0 20px;
         }
 
@@ -75,7 +75,7 @@
 
         .search_output button {
             border-radius: 0 20px 20px 0;
-        }
+        } */
 
         #map {
             height: 600px;

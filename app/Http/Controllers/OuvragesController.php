@@ -97,7 +97,7 @@ class OuvragesController extends Controller
         return response()->json($ouvrages);
     }
 
-    public function index_statu($statut)
+    public function index_statut($statut)
     {
         $statu = $statut;
         $Typeouvrages = Typeouvrage::all();
@@ -493,6 +493,16 @@ class OuvragesController extends Controller
 
     public function statistique_ouvrages(Request $request)
     {
+        
+        // Récupérer les paramètres de la requête
+        $nom_reg = $request->query('nom_reg');
+        $nom_pref = $request->query('nom_pref');
+        $nom_comm = $request->query('nom_comm');
+        $nom_cant = $request->query('nom_cant');
+        $nom_projet = $request->query('nom_projet');
+        $nom_fin = $request->query('nom_fin');
+        $nom_site = $request->query('nom_site');
+
         $ouvrages = DB::table('ouvrages')
                     ->join('sites', 'sites.id', '=', 'ouvrages.site_id')
                     ->join('typeouvrages', 'typeouvrages.id', '=', 'ouvrages.typeouvrage_id')
@@ -514,14 +524,14 @@ class OuvragesController extends Controller
                     ->when($nom_reg, function ($query) use ($nom_reg) {
                         $query->where('regions.nom_reg', 'like', "%$nom_reg%");
                     })
+                    ->when($nom_pref, function ($query) use ($nom_pref) {
+                        $query->where('prefectures.nom_pref', 'like', "%$nom_pref%");
+                    })
                     ->when($nom_comm, function ($query) use ($nom_comm) {
                         $query->where('communes.nom_comm', 'like', "%$nom_comm%");
                     })
-                    ->when($nom_ouvrage, function ($query) use ($nom_ouvrage) {
-                        $query->where('ouvrages.nom_ouvrage', 'like', "%$nom_ouvrage%");
-                    })
-                    ->when($type_ouvrage, function ($query) use ($type_ouvrage) {
-                        $query->where('typeouvrages.nom_type', 'like', "%$type_ouvrage%");
+                    ->when($nom_cant, function ($query) use ($nom_cant) {
+                        $query->where('cantons.nom_cant', 'like', "%$nom_cant%");
                     })
                     ->when($nom_projet, function ($query) use ($nom_projet) {
                         $query->where('projets.name', 'like', "%$nom_projet%");
@@ -531,9 +541,6 @@ class OuvragesController extends Controller
                     })
                     ->when($nom_site, function ($query) use ($nom_site) {
                         $query->where('sites.nom_site', 'like', "%$nom_site%");
-                    })
-                    ->when($statu, function ($query) use ($statu) {
-                        $query->where('ouvrages.statu', 'like', "%$statu%");
                     })
                     ->first();
 

@@ -7,6 +7,9 @@ function statu_sta(statu) {
     case "EC":
       action += `<span class="badge bg-light text-body">En cours</span>`;
       break;
+      case "FERME":
+        action += `<span class="badge bg-primary text-white">Exécution terminée</span>`;
+        break;
     case "SUSPENDU":
       action += `<span class="badge bg-secondary">Suspendu</span>`;
       break;
@@ -59,6 +62,18 @@ function action_ouvrage(id, statu) {
       <a href='javascript:void(0);' id="demande_suspension" data-url='/sites/show/${id}'  data-id='${id}' class='dropdown-item'>
         Suspendre
       </a>
+      <a href='/ouvrages/update/status/${id}/RT' class='dropdown-item'>
+        Réception technique
+      </a>
+      <a href='/ouvrages/update/status/${id}/RP' class='dropdown-item'>
+        Réception provisoir
+      </a>
+      <a href='/ouvrages/update/status/${id}/RD' class='dropdown-item'>
+        Réception définitve
+      </a>
+    `;
+  }else if (statu === "FERME") {
+    actions += `
       <a href='/ouvrages/update/status/${id}/RT' class='dropdown-item'>
         Réception technique
       </a>

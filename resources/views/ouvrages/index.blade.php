@@ -95,10 +95,11 @@
                                             <option value="" style="display: none;" disabled selected>Selectionner le status</option>
                                             <option value="NON_DEMARRE">NON DEMARRE</option>
                                             <option value="EC">EN COURS</option>
+                                            <option value="SUSPENDU">SUSPENDU</option>
+                                            <option value="FERME">TERMINES</option>
                                             <option value="RT">RECEPTION TECHNIQUE</option>
                                             <option value="RP">RECEPTION PROVISOIRE</option>
                                             <option value="RD">RECEPTION DEFINITIVE</option>
-                                            <option value="SUSPENDU">SUSPENDU</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-3 modal-footer mt-4">

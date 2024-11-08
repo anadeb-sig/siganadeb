@@ -17,8 +17,8 @@ function statuspaie(SommeSucces, id, telephone){
 }
 
 
-function rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone, sexe, type_card, card_number,financement,SommeTM,montant,type_transfert) {
-    fetch(`/beneficiaires/fetch_etat_paiements?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&sexe=${sexe}&type_card=${type_card}&card_number=${card_number}&financement=${financement}&SommeTM=${SommeTM}&montant=${montant}&type_transfert=${type_transfert}`)
+function rendtableau_paiement(nom_reg, nom_comm, nom_vill, nom,prenom, telephone, sexe, type_card, card_number,financement,SommeTM,montant,type_transfert,projet_id) {
+    fetch(`/beneficiaires/fetch_etat_paiements?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&nom=${nom}&prenom=${prenom}&telephone=${telephone}&sexe=${sexe}&type_card=${type_card}&card_number=${card_number}&financement=${financement}&SommeTM=${SommeTM}&montant=${montant}&type_transfert=${type_transfert}&projet_id=${projet_id}`)
     .then(response => response.json())
     .then(data => {
         // Calcul des sommes basées sur toutes les données

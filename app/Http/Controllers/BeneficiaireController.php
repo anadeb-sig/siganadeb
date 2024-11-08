@@ -23,7 +23,9 @@ class BeneficiaireController extends Controller
      */
     public function index()
     {
-        return view('fsb.beneficiaires.index');
+        $pro = new Beneficiaire();
+        $projets = $pro->projet();
+        return view('fsb.beneficiaires.index', compact('projets'));
     }
 
     public function fetch(Request $request)
@@ -77,7 +79,7 @@ class BeneficiaireController extends Controller
                 })->when($card_number, function ($query, $card_number) {
                     return $query->where('card_number', 'like', "%$card_number%");
                 })->when($projet_id, function ($query, $projet_id) {
-                    return $query->where('v.projet_id', $projet_id);
+                    return $query->where('b.projet_id', $projet_id);
                 })->paginate($perPage);
         
         return response()->json($beneficiaires);
@@ -111,7 +113,9 @@ class BeneficiaireController extends Controller
 
     public function etat_paiements()
     {
-        return view('fsb.beneficiaires.etat_paiements');
+        $pro = new Beneficiaire();
+        $projets = $pro->projet();
+        return view('fsb.beneficiaires.etat_paiements', compact('projets'));
     }
 
     /**
@@ -134,6 +138,7 @@ class BeneficiaireController extends Controller
 
         // Requête de base pour les sommes totales
         $sumQuery = DB::table('etatpaiements as e')
+            ->join('projets as pp', 'e.projet_id', '=', 'pp.id')
             ->join('villages as v', 'e.village_id', '=', 'v.id')
             ->join('cantons', 'cantons.id', '=', 'v.canton_id')
             ->join('communes as c', 'c.id', '=', 'cantons.commune_id')
@@ -147,6 +152,7 @@ class BeneficiaireController extends Controller
             'c.nom_comm' => $request->nom_comm,
             'v.nom_vill' => $request->nom_vill,
             'e.nom' => $request->nom,
+            'pp.id' => $request->projet_id,
             'e.prenom' => $request->prenom,
             'e.financement' => $request->financement,
             'e.sexe' => $request->sexe,
@@ -200,6 +206,7 @@ class BeneficiaireController extends Controller
 
         // Requête de base pour les données
         $dataQuery = DB::table('etatpaiements as e')
+            ->join('projets as pp', 'e.projet_id', '=', 'pp.id')
             ->join('villages as v', 'e.village_id', '=', 'v.id')
             ->join('cantons', 'cantons.id', '=', 'v.canton_id')
             ->join('communes as c', 'c.id', '=', 'cantons.commune_id')
@@ -305,7 +312,7 @@ class BeneficiaireController extends Controller
         ->join('regions as r', 'p.region_id', '=', 'r.id')
         ->where('b.status','=', 'Active')
         ->when($projet, function ($query, $projet) {
-            return $query->where('b.nature_projet',  $projet);
+            return $query->where('b.projet_id',  $projet);
         })->when($nom_reg, function ($query, $nom_reg) {
             return $query->where('r.nom_reg',  $nom_reg);
         })->selectRaw('
@@ -348,7 +355,7 @@ class BeneficiaireController extends Controller
             ->where('b.status','=', 'Active')
             ->whereRaw('TIMESTAMPDIFF(YEAR, b.date_naiss, CURDATE()) >= 60')
             ->when($projet, function ($query, $projet) {
-                return $query->where('b.nature_projet',  $projet);
+                return $query->where('b.projet_id',  $projet);
             })->when($nom_reg, function ($query, $nom_reg) {
                 return $query->where('r.nom_reg',  $nom_reg);
             })->count();
@@ -368,7 +375,7 @@ class BeneficiaireController extends Controller
         ->join('regions as r', 'p.region_id', '=', 'r.id')
         ->where('b.status','=', 'Active')
         ->when($projet, function ($query, $projet) {
-            return $query->where('b.nature_projet',  $projet);
+            return $query->where('b.projet_id',  $projet);
         })->when($nom_reg, function ($query, $nom_reg) {
             return $query->where('r.nom_reg',  $nom_reg);
         })->selectRaw('
@@ -411,7 +418,7 @@ class BeneficiaireController extends Controller
                 ->join('prefectures as p', 'cc.prefecture_id', '=', 'p.id')
                 ->join('regions as r', 'p.region_id', '=', 'r.id')
                 ->when($projet, function ($query, $projet) {
-                    return $query->where('b.nature_projet',  $projet);
+                    return $query->where('b.projet_id',  $projet);
                 })->when($nom_reg, function ($query, $nom_reg) {
                     return $query->where('r.nom_reg',  $nom_reg);
                 })

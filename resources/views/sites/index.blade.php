@@ -65,6 +65,8 @@
                                         <label for="nom_site" class="control-label">Site d'ouvrage</label>
                                         <input class="form-control w-100" id="nom_site" name="nom_site" type="text" placeholder="exemple: ....." />
                                     </div>
+                                    <div class="col-xl-4">
+                                    </div>
                                     <div class="col-xl-4 modal-footer mt-4">
                                         <a href="{{ route('sites.index') }}" type="button" class="btn btn-outline-danger">
                                             <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir

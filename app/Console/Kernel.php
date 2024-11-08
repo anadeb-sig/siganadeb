@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('update:contrat')->daily();
         $schedule->command('update:etat_contrat')->daily();
         $schedule->command('update:etat_ouvrage')->daily();
 

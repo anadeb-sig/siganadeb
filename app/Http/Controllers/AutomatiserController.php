@@ -29,15 +29,15 @@ class AutomatiserController extends Controller
 
         DB::table('etatpaiements')->truncate();
 
-        ini_set('max_execution_time', 0); // 5 minutes
+        ini_set('max_execution_time', 0);
 
         DB::insert("
-            INSERT INTO etatpaiements (id,telephone,type_card,mobile_money,card_number,nom,prenom,sexe,tm,mie,financement,village_id, nbr, SommeSucces, nombre_succes,SommeTM,SommeMIE, SommePending, nombre_pending, SommeCancel, nombre_Cancel, SommeFail, nombre_Fail)
+            INSERT INTO etatpaiements (id,telephone,type_card,mobile_money,card_number,nom,prenom,sexe,tm,mie,financement,village_id,projet_id, nbr, SommeSucces, nombre_succes,SommeTM,SommeMIE, SommePending, nombre_pending, SommeCancel, nombre_Cancel, SommeFail, nombre_Fail)
                 SELECT 
                     b.id,
                     b.telephone,
-                        p.type_card,
-                        p.mobile_money,
+                    p.type_card,
+                    p.mobile_money,
                     b.card_number,
                     b.nom,
                     b.prenom,
@@ -45,7 +45,8 @@ class AutomatiserController extends Controller
                     b.tm,
                     b.mie,
                     b.financement,
-                    b.village_id,	  
+                    b.village_id,
+                    b.projet_id,	  
                     COUNT(p.telephone) AS nbr,
                     SUM(CASE WHEN p.status = 'Success' THEN p.montant ELSE 0 END) AS SommeSucces,
                     SUM(CASE WHEN p.status = 'Success' THEN 1 ELSE 0 END) AS nombre_succes,
@@ -74,7 +75,7 @@ class AutomatiserController extends Controller
                 SUM(CASE WHEN p.status = 'Fail' THEN 1 ELSE 0 END) AS nombre_Fail
                 FROM paiements p
                 INNER JOIN beneficiaires b ON b.id = p.id
-                GROUP BY b.id, b.telephone,p.type_card,p.mobile_money,b.card_number, b.nom, b.prenom, b.sexe, b.tm, b.mie, b.financement, b.village_id;
+                GROUP BY b.id, b.telephone,p.type_card,p.mobile_money,b.card_number, b.nom, b.prenom, b.sexe, b.tm, b.mie, b.financement, b.village_id,b.projet_id;
         ");
     }
 
@@ -86,7 +87,7 @@ class AutomatiserController extends Controller
         ini_set('max_execution_time', 0); // infini
 
         DB::insert("
-            INSERT INTO ptf_villages (reg_fa, pref_fa, comm_fa, cant_fa, vill_fa, financement, CardType, CardNum, Gender, TransferNumber, TransferCarrier, montantR, frais, AllocationPayNumber)
+            INSERT INTO ptf_villages (reg_fa, pref_fa, comm_fa, cant_fa, vill_fa,projet_id, financement, CardType, CardNum, Gender, TransferNumber, TransferCarrier, montantR, frais, AllocationPayNumber)
             WITH RECURSIVE seq AS (
                 SELECT 1 AS n
                 UNION ALL
@@ -101,6 +102,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -112,6 +114,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -128,6 +131,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -139,6 +143,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -155,6 +160,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -166,6 +172,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -182,6 +189,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -193,6 +201,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -209,6 +218,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -220,6 +230,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -236,6 +247,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -247,6 +259,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -263,6 +276,7 @@ class AutomatiserController extends Controller
                     cc.nom_comm,
                     c.nom_cant,
                     v.nom_vill,
+                    projet_id,
                     e.financement,
                     e.type_card,
                     e.card_number,
@@ -274,6 +288,7 @@ class AutomatiserController extends Controller
                     ROW_NUMBER() OVER (PARTITION BY e.telephone ORDER BY e.SommeTM) AS ligne_numero,
                     seq.n AS seq_num
                 FROM etatpaiements e
+                JOIN projets pp ON e.projet_id = pp.id
                 JOIN villages v ON e.village_id = v.id
                 JOIN cantons c ON v.canton_id = c.id
                 JOIN communes cc ON c.commune_id = cc.id
@@ -288,6 +303,7 @@ class AutomatiserController extends Controller
                 nom_comm,
                 nom_cant,
                 nom_vill,
+                projet_id,
                 financement,
                 type_card,
                 card_number,
@@ -318,8 +334,8 @@ class AutomatiserController extends Controller
         //dd($date1->format('Y-m-d'));
 
         $payements = DB::table('ptf_villages')
-                ->select(DB::raw('reg_fa, pref_fa, comm_fa, cant_fa, vill_fa,financement, MAX(AllocationPayNumber) as number'))
-                ->groupBy('reg_fa', 'pref_fa', 'comm_fa', 'cant_fa', 'vill_fa', 'financement')
+                ->select(DB::raw('reg_fa, pref_fa, comm_fa, cant_fa, vill_fa,projet_id,financement, MAX(AllocationPayNumber) as number'))
+                ->groupBy('reg_fa', 'pref_fa', 'comm_fa', 'cant_fa', 'vill_fa','projet_id', 'financement')
                 ->get();
 
         foreach ($payements as $payement) {
@@ -330,6 +346,7 @@ class AutomatiserController extends Controller
             $lignes_excel['comm'] = $payement->comm_fa;
             $lignes_excel['cant'] = $payement->cant_fa;
             $lignes_excel['vill'] = $payement->vill_fa;
+            $lignes_excel['projet_id'] = $payement->projet_id;
             $lignes_excel['financement'] = $payement->financement;
 
             for ($i=1; $i <= $payement->number; $i++) {                
@@ -351,8 +368,9 @@ class AutomatiserController extends Controller
                     ->where('comm_fa', $payement->comm_fa)
                     ->where('cant_fa', $payement->cant_fa)
                     ->where('vill_fa', $payement->vill_fa)
+                    ->where('projet_id', $payement->projet_id)
                     ->where('financement', $payement->financement)
-                    ->groupBy('reg_fa', 'pref_fa', 'comm_fa', 'cant_fa', 'vill_fa','financement')
+                    ->groupBy('reg_fa', 'pref_fa', 'comm_fa', 'cant_fa', 'vill_fa','projet_id','financement')
                     ->get();
 
                 foreach ($pay as $paye) {
@@ -391,9 +409,9 @@ class AutomatiserController extends Controller
         ini_set('max_execution_time', 0); // 5 minutes
 
         DB::insert("
-            INSERT INTO etat_par_beneficiaires(id,reg,pref,comm,cant,vill,financement,nom,prenom,sexe,telephone,cardNum,montantEnv,
+            INSERT INTO etat_par_beneficiaires(id,reg,pref,comm,cant,vill,projet_id,financement,nom,prenom,sexe,telephone,cardNum,montantEnv,
             montantRecu,frais,nbrTranche,montant1,frais1,montant2,frais2,montant3,frais3,montant4,frais4,montant5,frais5,montant6,frais6)
-            SELECT e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM,
+            SELECT e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,projet_id,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM,
             SUM(p.montantR) AS montantRecu,
             (e.SommeTM-SUM(p.montantR)) AS frais,
             COUNT(p.AllocationPayNumber) nbrTranche,
@@ -411,7 +429,7 @@ class AutomatiserController extends Controller
             SUM(CASE WHEN p.AllocationPayNumber = 6 THEN p.frais ELSE 0 END) AS frais6 
             FROM etatpaiements e
             INNER JOIN ptf_villages p ON e.id = CONCAT(p.TransferNumber,';',p.CardNum)
-            GROUP BY e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM;
+            GROUP BY e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,p.projet_id,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM;
         ");
     }
 
@@ -442,8 +460,6 @@ class AutomatiserController extends Controller
                     $contratToUpdate->statu = "NON_SUSPENDU";  // Mettre à jour la nouvelle date
                     $contratToUpdate->save();  // Sauvegarder les changements dans la base de données
                 }
-
-
             // Mettre à jour le statut des sites correspondants
             DB::table('ouvrages')
             ->whereIn('id', function ($query) use ($contrat) {
@@ -466,9 +482,9 @@ class AutomatiserController extends Controller
 
         if($demande){
             // Mettre à jour le statut des sites correspondants
-            $site = Ouvrage::findOrFail($demande->ouvrage_id);
-            $site->statu = "SUSPENDU";
-            $site->save();
+            $ouvrage = Ouvrage::findOrFail($demande->ouvrage_id);
+            $ouvrage->statu = "SUSPENDU";
+            $ouvrage->save();
 
             // Récupérer les contrats associés
             $contrats = Contrat::join('signers', 'contrats.id', '=', 'signers.contrat_id')
@@ -487,6 +503,46 @@ class AutomatiserController extends Controller
                     $contratToUpdate->date_fin = $date_fin_suppr->toDateString();  // Mettre à jour la date de fin
                     $contratToUpdate->statu = "SUSPENDU";  // Mettre à jour le statut
                     $contratToUpdate->save();  // Sauvegarder les changements
+                }
+            }
+        }
+    }
+
+    public function contrat(){
+        $contrat = Contrat::select('id','date_debut', 'date_fin')
+                        ->where('statu', 'NON_SUSPENDU')
+                        ->get();
+        foreach ($contrat as $contrat) {
+            if ($contrat->date_debut <= now() && now() <= $contrat->date_fin) {
+                $ouvrageId = Ouvrage::select('ouvrages.id')
+                            ->join('signers', 'ouvrages.id', '=', 'signers.ouvrage_id')
+                            ->join('contrats', 'contrats.id', '=', 'signers.contrat_id')
+                            ->where('contrats.id', $contrat->id)
+                            ->get(); // Récupérer uniquement l'ID de l'ouvrage
+                if ($ouvrageId) {
+                    foreach ($ouvrageId as $value) {
+                        $ouvrage = Ouvrage::find($value->id); // Récupérer l'instance complète du modèle Ouvrage
+                        $ouvrage->statu = "EC"; // Assurez-vous que la colonne s'appelle bien "statut" dans votre base de données
+                        $ouvrage->save();
+                    }
+                }
+            }else if ($contrat->date_fin < now()) {
+                $contrats = Contrat::findOrFail($contrat->id);
+                $contrats->statu = "FERME";
+                $contrats->save();
+                
+                $ouvrageId = Ouvrage::select('ouvrages.id')
+                        ->join('signers', 'ouvrages.id', '=', 'signers.ouvrage_id')
+                        ->join('contrats', 'contrats.id', '=', 'signers.contrat_id')
+                        ->where('contrats.id', $contrat->id)
+                        ->get(); // Récupérer uniquement l'ID de l'ouvrage
+
+                if ($ouvrageId) {
+                    foreach ($ouvrageId as $value) {
+                        $ouvrage = Ouvrage::find($value->id); // Récupérer l'instance complète du modèle Ouvrage
+                        $ouvrage->statu = "FERME"; // Assurez-vous que la colonne s'appelle bien "statut" dans votre base de données
+                        $ouvrage->save();
+                    }
                 }
             }
         }

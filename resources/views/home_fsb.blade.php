@@ -100,17 +100,16 @@
 
                     <!-- Wizard tab pane item 3-->
                     <div class="tab-pane py-2 py-xl-2 fade" id="wizard3" role="tabpanel" aria-labelledby="wizard3-tab">
-                        <div class="row">
-                            <div class="col-xl-5">
+
+                        <div class="row d-flex align-items-center">
+                            <div class="col-xl-4">
                                 <h1 class="h3 text-gray-800 mt-2"></h1>
                             </div>
-                            <div class="col-xl-7"><div class="row search_output">
+                            <div class="col-xl-8">
                                 <div class="row">
-                                    <div class="col-xl-2 d-flex">
-                                    </div>
                                     <div class="col-xl-4 d-flex region">
-                                        <select type="text" class="form-control w-100" id="nom_reg" value="">
-                                            <option value="">Recherchez par région</option>
+                                        <select type="text" class="form-control w-100 btnform" id="nom_reg" value="">
+                                            <option value="">Par région</option>
                                             <option value="CENTRALE">CENTRALE</option>
                                             <option value="KARA">KARA</option>
                                             <option value="MARITIME">MARITIME</option>
@@ -119,15 +118,17 @@
                                             <option value="MARITIME(GRAND_LOME)">GRAND LOME</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-6 d-flex projet">
-                                        <select type="text" class="form-control w-100" id="projet" value="">
-                                            <option value="">Recherchez par type de projet</option>
+                                    <div class="col-xl-6">
+                                        <select type="text" class="form-control w-100 ml-0 btnform" id="projet" value="">
+                                            <option value="">Par type de projet</option>
                                             <option value="FSB_NOVISSI">FSB NOVISSI</option>
                                             <option value="FSB_NOVISSI_MARITIME">FSB NOVISSI MARITIME</option>
                                             <option value="FSB_NOVISSI_EXT">FSB NOVISSI EXTENSION</option>
                                         </select>
-                                        <button type="submit" id="searchbtn" class="btn btn-outline-primary ml-2">
-                                            <i class="fa fa-search"></i>
+                                    </div>
+                                    <div class="col-xl-2">
+                                        <button type="submit" id="searchbtn" class="btn btn-outline-primary btnform">
+                                            <i class="fa fa-search"></i>  &nbsp; recherche !
                                         </button>
                                     </div>
                                 </div>

@@ -44,12 +44,21 @@ class Beneficiaire extends Model
         'menage_id',
         'kb_id',
         'type_attrib',
-        'village_id'
+        'village_id',
+        'projet_id'
     ];
     
     public function Village()
     {
         return $this->belongsTo('App\Models\Village','village_id','id');
+    }
+
+
+    public function projet(){
+        $projets = DB::table('projets')
+                    ->where('name', 'LIKE', 'FA-FSB%')
+                    ->get();
+        return $projets;
     }
 
 }

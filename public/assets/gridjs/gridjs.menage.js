@@ -8,8 +8,8 @@ function detail_membre(id){
     )
 }
 
-function rendtableau_menage(nom_reg, nom_comm, nom_vill, id, nature_projet, rang, hhead, sexe, phone_member1) {
-    fetch(`menages/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&id=${id}&nature_projet=${nature_projet}&rang=${rang}&hhead=${hhead}&sexe=${sexe}&phone_member1=${phone_member1}`)
+function rendtableau_menage(nom_reg, nom_comm, nom_vill, id, projet_id, rang, hhead, sexe, phone_member1) {
+    fetch(`menages/fetch?nom_reg=${nom_reg}&nom_comm=${nom_comm}&nom_vill=${nom_vill}&id=${id}&projet_id=${projet_id}&rang=${rang}&hhead=${hhead}&sexe=${sexe}&phone_member1=${phone_member1}`)
     .then(response => response.json())
     .then(data => {
         let tableDataa = data.data.map(menage => [

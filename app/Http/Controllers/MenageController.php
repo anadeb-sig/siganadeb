@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menage;
+use App\Models\Beneficiaire;
 use DB;
 
 class MenageController extends Controller
@@ -24,7 +25,9 @@ class MenageController extends Controller
      */
     public function index()
     {
-        return view('fsb.menages.index');
+        $pro = new Beneficiaire();
+        $projets = $pro->projet();
+        return view('fsb.menages.index', compact('projets'));
     }
 
     public function fetch(Request $request)
@@ -39,7 +42,7 @@ class MenageController extends Controller
         $phone_member1 = $request->phone_member1; 
         $rang = $request->rang;
         $id = $request->id;
-        $nature_projet = $request->nature_projet;
+        $projet_id = $request->projet_id;
 
         //dd($request->all());
 
@@ -57,8 +60,8 @@ class MenageController extends Controller
                 })
                 ->when($nom_vill, function ($query, $nom_vill) {
                     return $query->where('villages.nom_vill',  'like', "%$nom_vill%");
-                })->when($nature_projet, function ($query, $nature_projet) {
-                    return $query->where('menages.nature_projet', $nature_projet);
+                })->when($projet_id, function ($query, $projet_id) {
+                    return $query->where('menages.projet_id', $projet_id);
                 })->when($id, function ($query, $id) {
                     return $query->where('menages.id',  'like', "%$id%");
                 })->when($rang, function ($query, $rang) {
