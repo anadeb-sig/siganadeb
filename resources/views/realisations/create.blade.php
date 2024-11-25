@@ -1,4 +1,4 @@
-<div class="modal fade add_entreprise_modal" tabindex="-1" aria-labelledby="exampleModalFullscreenLabel" aria-hidden="true">
+<div class="modal fade add_realisation_modal" tabindex="-1" aria-labelledby="exampleModalFullscreenLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,15 +13,16 @@
                         @endforeach
                     </ul>
                 @endif
-                <form method="POST" action="{{ route('entreprises.store') }}" accept-charset="UTF-8" id="create_entreprise_form" name="create_entreprise_form" class="form-horizontal">
+                <form method="POST" action="{{ route('realisations.store') }}" accept-charset="UTF-8" id="form" name="create_realisation_form" class="form-horizontal">
                 {{ csrf_field() }}
-                    @include ('entreprises.form')                    
+                    @include ('realisations.form')
                     <!-- Pied du formulaire -->
                     @include('button.button')
                     <?php                     
-                        $attribut = "add_entreprise_btn"; 
+                        $attribut = "add_realisation_btn"; 
                         echo buttons($attribut);
                     ?>
+                    
                 </form>
             </div>
         </div>

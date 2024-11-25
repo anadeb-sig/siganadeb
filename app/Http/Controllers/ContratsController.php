@@ -45,7 +45,7 @@ class ContratsController extends Controller
     }
 
     public function fetch(Request $request){
-        $perPage = 1000;
+        $perPage = 30;
         $code = $request->code;
         $date_ordre_debut = $request->date_ordre_debut;
         $date_ordre_fin = $request->date_ordre_fin;

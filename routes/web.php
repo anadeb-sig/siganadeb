@@ -28,6 +28,8 @@ use App\Http\Controllers\TempController;
 use App\Http\Controllers\MenageController;
 use App\Http\Controllers\BeneficiaireController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\EstimationController;
+use App\Http\Controllers\RealisationController;
 
 use App\Http\Controllers\InscritController;
 use App\Http\Controllers\SynthesePaiementController;
@@ -53,6 +55,11 @@ Route::get('/logout', function () {
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+Route::get('/progress-data', [HomeController::class, 'getProgressData']);
+
+
+// Route::get('/stat_inra', [HomeController::class, 'stat_inra'])->name('stat_inra');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/home_infra', [HomeController::class, 'index_infra'])->name('home_infra');
@@ -507,4 +514,30 @@ Route::prefix('demandejours')->name('demandejours.')->group(function()
     Route::get('/create', [Demande_jourController::class, 'create'])->name('create');
     Route::post('/', [Demande_jourController::class, 'store'])->name('store');
     Route::get('/detail/{id}',[Demande_jourController::class, 'detail'])->name('detail');
+});
+
+Route::prefix('estimations')->name('estimations.')->group(function()
+{
+    Route::get('/', [EstimationController::class, 'index'])->name('index');
+    Route::get('fetch', [EstimationController::class, 'fetch']);
+    Route::get('/create', [EstimationController::class, 'create'])->name('create');
+    Route::get('/{estimation}/edit',[EstimationController::class, 'edit'])->name('edit');
+    Route::put('estimation/', [EstimationController::class, 'update'])->name('update');
+    Route::post('/', [EstimationController::class, 'store'])->name('store');
+    Route::delete('/{estimation}',[EstimationController::class, 'destroy'])->name('destroy');
+    Route::post('/telecharger', [EstimationController::class, 'telecharger'])->name('telecharger');
+    Route::get('/import-estimation', [EstimationController::class, 'export_format'])->name('export_format');
+    Route::post('/import', [EstimationController::class, 'uploadEstimations'])->name('import');
+});
+
+Route::prefix('realisations')->name('realisations.')->group(function()
+{
+    Route::get('/', [RealisationController::class, 'index'])->name('index');
+    Route::get('fetch', [RealisationController::class, 'fetch']);
+    Route::get('/create', [RealisationController::class, 'create'])->name('create');
+    Route::get('/par_ouvrage/{id}',[RealisationController::class, 'par_ouvrage']);
+    Route::get('/{realisation}/edit',[RealisationController::class, 'edit'])->name('edit');
+    Route::put('realisation/', [RealisationController::class, 'update'])->name('update');
+    Route::post('/', [RealisationController::class, 'store'])->name('store');
+    Route::delete('/{realisation}',[RealisationController::class, 'destroy'])->name('destroy');
 });

@@ -502,6 +502,7 @@ class OuvragesController extends Controller
         $nom_projet = $request->query('nom_projet');
         $nom_fin = $request->query('nom_fin');
         $nom_site = $request->query('nom_site');
+        $nom_ouvrage = $request->query('nom_ouvrage');
 
         $ouvrages = DB::table('ouvrages')
                     ->join('sites', 'sites.id', '=', 'ouvrages.site_id')
@@ -541,6 +542,9 @@ class OuvragesController extends Controller
                     })
                     ->when($nom_site, function ($query) use ($nom_site) {
                         $query->where('sites.nom_site', 'like', "%$nom_site%");
+                    })
+                    ->when($nom_ouvrage, function ($query) use ($nom_ouvrage) {
+                        $query->where('ouvrages.nom_ouvrage', 'like', "%$nom_ouvrage%");
                     })
                     ->first();
 

@@ -81,9 +81,8 @@ class EntreprisesController extends Controller
             return redirect()->route('entreprises.index')
                 ->with('success_message', __('Enregistrement effectué avec succès'));
         } catch (Exception $exception) {
-
             return back()->withInput()
-                ->withErrors(['unexpected_error' => trans('entreprises.unexpected_error')]);
+                ->withErrors(['error_message' => trans('entreprises.unexpected_error')]);
         }
     }
 

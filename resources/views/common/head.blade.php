@@ -52,6 +52,9 @@
     <script type="text/javascript" src="{{ asset('./assets/gridjs/gridjs.demande.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset('./assets/gridjs/gridjs.demande_jour.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('./assets/gridjs/gridjs.estimation.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('./assets/gridjs/gridjs.realisation.js') }}"></script>
 
     
 

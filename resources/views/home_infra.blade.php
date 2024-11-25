@@ -50,6 +50,10 @@
                                                 <label for="nom_site" class="control-label">Site d'ouvrage</label>
                                                 <input class="form-control w-100" id="nom_site" name="nom_site" type="text" placeholder="exemple: ....." />
                                             </div>
+                                            <div class="col-xl-2 {{ $errors->has('nom_site') ? 'has-error' : '' }}">
+                                                <label for="nom_ouvrage" class="control-label">Ouvrage</label>
+                                                <input class="form-control w-100" id="nom_ouvrage" name="nom_ouvrage" type="text" placeholder="exemple: ....." />
+                                            </div>
                                             <div class="col-xl-3 {{ $errors->has('nom_site') ? 'has-error' : '' }}">
                                                 <label for="nom_site" class="control-label">Projet</label>
                                                 <select class="form-control" id="nom_projet" name="nom_projet" required="true">
@@ -61,7 +65,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-xl-3 {{ $errors->has('nom_fin') ? 'has-error' : '' }}">
+                                            <div class="col-xl-2 {{ $errors->has('nom_fin') ? 'has-error' : '' }}">
                                                 <label for="nom_fin" class="control-label">Financement</label>
                                                 <select class="form-control" id="nom_fin" name="nom_fin" value="" required>
                                                     <option value="" style="display: none;" disabled selected>Select financement</option>
@@ -72,8 +76,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-xl-3 modal-footer mt-4">
-                                                <a href="{{ route('sites.index') }}" type="button" class="btn btn-outline-danger">
+                                            <div class="col-xl-2 modal-footer mt-4">
+                                                <a href="{{ Route('home_infra') }}" type="button" class="btn btn-outline-danger">
                                                     <i class="fas fa-sync-alt"></i> &nbsp;Rafraichir
                                                 </a>
                                                 &nbsp;&nbsp;
@@ -172,196 +176,146 @@
     </div>
 
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fonction par défaut sans paramètres
-            loaddatatotal();
-            // Gestionnaire de clic sur le bouton "Afficher avec paramètres"
-            document.getElementById('searchbtn').addEventListener('click', function() {
-                let nom_reg = document.getElementById('nom_reg').value;
-                let nom_pref = document.getElementById('nom_pref').value;
-                let nom_comm = document.getElementById('nom_comm').value;
-                let nom_cant = document.getElementById('nom_cant').value;
-                let nom_fin = document.getElementById('nom_fin').value;
-                let nom_site = document.getElementById('nom_site').value;
-                let nom_projet = document.getElementById('nom_projet').value;
-                fetch(`/ouvrages/statistiques?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_projet=${nom_projet}&nom_fin=${nom_fin}&nom_site=${nom_site}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Mise à jour des éléments DOM avec les valeurs formatées
-                    let total_rt = document.getElementById('rt');
-                    total_rt.textContent = Number(data.nbr_RT || 0).toLocaleString();
 
-                    let total_rp = document.getElementById('rp');
-                    total_rp.textContent = Number(data.nbr_RP || 0).toLocaleString();
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Charger les données totales au démarrage
+        loadData();
 
-                    let total_rd = document.getElementById('rd');
-                    total_rd.textContent = Number(data.nbr_RD || 0).toLocaleString();
+        // Gestionnaire de clic pour la recherche avec paramètres
+        document.getElementById('searchbtn').addEventListener('click', function () {
+            const filters = getFilters();
+            loadData(filters);
+        });
+    });
 
-                    let total_ec = document.getElementById('ec');
-                    total_ec.textContent = Number(data.nbr_EC || 0).toLocaleString();
+    // Fonction pour récupérer les filtres depuis le formulaire
+    function getFilters() {
+        return {
+            nom_reg: document.getElementById('nom_reg').value || '',
+            nom_pref: document.getElementById('nom_pref').value || '',
+            nom_comm: document.getElementById('nom_comm').value || '',
+            nom_cant: document.getElementById('nom_cant').value || '',
+            nom_projet: document.getElementById('nom_projet').value || '',
+            nom_fin: document.getElementById('nom_fin').value || '',
+            nom_site: document.getElementById('nom_site').value || '',
+            nom_ouvrage: document.getElementById('nom_ouvrage').value || ''
+        };
+    }
 
-                    let total_suspendu = document.getElementById('suspendu');
-                    total_suspendu.textContent = Number(data.nbr_SUSPENDU || 0).toLocaleString();
+    // Fonction pour charger les données
+    function loadData(filters = {}) {
+        const queryParams = new URLSearchParams(filters).toString();
 
-                    let total_nondemarre = document.getElementById('nondemarre');
-                    total_nondemarre.textContent = Number(data.nbr_NON_DEMARRE || 0).toLocaleString();
+        // Charger les statistiques
+        fetch(`/ouvrages/statistiques?${queryParams}`)
+            .then(response => response.json())
+            .then(data => updateStatistics(data))
+            .catch(error => console.error('Erreur lors du chargement des statistiques :', error));
 
-                    // Préparation des données pour le fichier Excel
-                    const dataa = [
-                        [
-                            "Nbre site recep définitive",
-                            "Nbre site recep provisoire",
-                            "Nbre site recep technique",
-                            "Nbre site recep en cours",
-                            "Nbre site recep suspendu",
-                            "Nbre site recep non demarre"
-                        ],
-                        [
-                            data.nbr_RD || 0,
-                            data.nbr_RP || 0,
-                            data.nbr_RT || 0,
-                            data.nbr_EC || 0,
-                            data.nbr_SUSPENDU || 0,
-                            data.nbr_NON_DEMARRE || 0
-                        ]
-                    ];
+        // Charger les données du graphe
+        fetch(`/progress-data?${queryParams}`)
+            .then(response => response.json())
+            .then(data => updateChart(data))
+            .catch(error => console.error('Erreur lors du chargement des données du graphe :', error));
+    }
 
-                    let excelButton = document.getElementById('excelButton');
-                    if (excelButton) {
-                        // Fonction de génération Excel au clic
-                        excelButton.addEventListener('click', () => {
-                            const wb = XLSX.utils.book_new();
-                            const ws = XLSX.utils.aoa_to_sheet(dataa);
+    // Met à jour les statistiques dans le DOM
+    function updateStatistics(data) {
+        const statsMapping = {
+            rt: data.nbr_RT || 0,
+            rp: data.nbr_RP || 0,
+            rd: data.nbr_RD || 0,
+            ec: data.nbr_EC || 0,
+            suspendu: data.nbr_SUSPENDU || 0,
+            nondemarre: data.nbr_NON_DEMARRE || 0
+        };
 
-                            XLSX.utils.book_append_sheet(wb, ws, 'Etat_site');
-
-                            // Obtenir la date actuelle pour le nom du fichier
-                            let today = new Date();
-                            let yyyy = today.getFullYear();
-                            let mm = String(today.getMonth() + 1).padStart(2, '0');
-                            let dd = String(today.getDate()).padStart(2, '0');
-
-                            // Créer le nom du fichier au format aaaa-mm-jj
-                            let filename = `${yyyy}_${mm}_${dd}_Etat_site.xlsx`;
-                            XLSX.writeFile(wb, filename);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Erreur lors de la récupération des données :", error);
-                });
-            });
+        Object.entries(statsMapping).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = Number(value).toLocaleString();
         });
 
-        function loaddatatotal(){
-            let nom_reg = "";
-            let nom_pref = "";
-            let nom_comm = "";
-            let nom_cant = "";
-            let nom_projet = "";
-            let nom_fin = "";
-            let nom_site = "";
-            fetch(`/ouvrages/statistiques?nom_reg=${nom_reg}&nom_pref=${nom_pref}&nom_comm=${nom_comm}&nom_cant=${nom_cant}&nom_projet=${nom_projet}&nom_fin=${nom_fin}&nom_site=${nom_site}`)
-            .then(response => response.json())
-            .then(data => {
-                // Mise à jour des éléments DOM avec les valeurs formatées
-                let total_rt = document.getElementById('rt');
-                total_rt.textContent = Number(data.nbr_RT || 0).toLocaleString();
+        prepareExcelDownload(statsMapping);
+    }
 
-                let total_rp = document.getElementById('rp');
-                total_rp.textContent = Number(data.nbr_RP || 0).toLocaleString();
+    // Prépare les données pour l'export Excel
+    function prepareExcelDownload(stats) {
+        const dataa = [
+            [
+                "Nbre site recep définitive",
+                "Nbre site recep provisoire",
+                "Nbre site recep technique",
+                "Nbre site recep en cours",
+                "Nbre site recep suspendu",
+                "Nbre site recep non demarre"
+            ],
+            [
+                stats.rd,
+                stats.rp,
+                stats.rt,
+                stats.ec,
+                stats.suspendu,
+                stats.nondemarre
+            ]
+        ];
 
-                let total_rd = document.getElementById('rd');
-                total_rd.textContent = Number(data.nbr_RD || 0).toLocaleString();
+        const excelButton = document.getElementById('excelButton');
+        if (excelButton) {
+            excelButton.onclick = () => generateExcel(dataa);
+        }
+    }
 
-                let total_ec = document.getElementById('ec');
-                total_ec.textContent = Number(data.nbr_EC || 0).toLocaleString();
+    // Génère et télécharge le fichier Excel
+    function generateExcel(data) {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, 'Etat_site');
 
-                let total_suspendu = document.getElementById('suspendu');
-                total_suspendu.textContent = Number(data.nbr_SUSPENDU || 0).toLocaleString();
+        const today = new Date();
+        const filename = `${today.getFullYear()}_${String(today.getMonth() + 1).padStart(2, '0')}_${String(today.getDate()).padStart(2, '0')}_Etat_site.xlsx`;
+        XLSX.writeFile(wb, filename);
+    }
 
-                let total_nondemarre = document.getElementById('nondemarre');
-                total_nondemarre.textContent = Number(data.nbr_NON_DEMARRE || 0).toLocaleString();
+    // Met à jour le graphique
+    // Variable pour stocker l'instance du graphique
+    let progressChart = null;
 
-                // Préparation des données pour le fichier Excel
-                const dataa = [
-                    [
-                        "Nbre site recep définitive",
-                        "Nbre site recep provisoire",
-                        "Nbre site recep technique",
-                        "Nbre site recep en cours",
-                        "Nbre site recep suspendu",
-                        "Nbre site recep non demarre"
-                    ],
-                    [
-                        data.nbr_RD || 0,
-                        data.nbr_RP || 0,
-                        data.nbr_RT || 0,
-                        data.nbr_EC || 0,
-                        data.nbr_SUSPENDU || 0,
-                        data.nbr_NON_DEMARRE || 0
-                    ]
-                ];
+    function updateChart(data) {
+        const progressCtx = document.getElementById('progressLineChart').getContext('2d');
 
-                let excelButton = document.getElementById('excelButton');
-                if (excelButton) {
-                    // Fonction de génération Excel au clic
-                    excelButton.addEventListener('click', () => {
-                        const wb = XLSX.utils.book_new();
-                        const ws = XLSX.utils.aoa_to_sheet(dataa);
+        // Détruire l'ancien graphique s'il existe
+        if (progressChart) {
+            progressChart.destroy();
+        }
 
-                        XLSX.utils.book_append_sheet(wb, ws, 'Etat_site');
-
-                        // Obtenir la date actuelle pour le nom du fichier
-                        let today = new Date();
-                        let yyyy = today.getFullYear();
-                        let mm = String(today.getMonth() + 1).padStart(2, '0');
-                        let dd = String(today.getDate()).padStart(2, '0');
-
-                        // Créer le nom du fichier au format aaaa-mm-jj
-                        let filename = `${yyyy}_${mm}_${dd}_Etat_site.xlsx`;
-                        XLSX.writeFile(wb, filename);
-                    });
+        // Créer un nouveau graphique
+        progressChart = new Chart(progressCtx, {
+            type: 'line',
+            data: {
+                labels: data.labels || [],
+                datasets: data.datasets || []
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: context => `${context.raw}%`
+                        }
+                    }
                 }
-            })
-            .catch(error => {
-                console.error("Erreur lors de la récupération des données :", error);
-            });
+            }
+        });
+    }
 
-        }
-    </script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-  <!--  -->
-  <script>
-    const progressCtx = document.getElementById('progressLineChart').getContext('2d');
-    const progressLineChart = new Chart(progressCtx, {
-      type: 'line',
-      data: {
-        labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4', 'Semaine 5', 'Semaine 6'],
-        datasets: [{
-          label: 'Avancement prévu (%)',
-          data: [10, 20, 30, 50, 70, 100],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          fill: false
-        }, {
-          label: 'Avancement réel (%)',
-          data: [5, 15, 25, 40, 60, 85],
-          borderColor: 'rgba(255, 99, 132, 1)',
-          fill: false
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100
-          }
-        }
-      }
-    });
-  </script>
+</script>
 
 @endsection

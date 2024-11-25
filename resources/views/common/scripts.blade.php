@@ -541,7 +541,7 @@
     });
 </script>
 
-<!-- <script>
+<script>
     $(document).ready(function() {
         $('#commune_comm').change(function() {
             let value = $(this).val();
@@ -571,7 +571,7 @@
             }
         });
     });
-</script> -->
+</script>
 
 
 <script>
@@ -605,35 +605,35 @@
         });
     });
 
-    // $(document).ready(function() {
-    //     $('#commune_comm').change(function() {
-    //         let value = $(this).val();
-    //         let selectedOption = $(this).find('option:selected');
-    //         let url = '/ouvrages/get-sign/' + value;
-    //         let ouvrage_comm = $('#site_contrat');    
-    //         ouvrage_comm.prop('disabled', true).html('<option value="">Chargement en cours...</option>');    
-    //         if (url) {
-    //         $.ajax({
-    //             url: url,
-    //             method: 'GET',
-    //             dataType: 'json',
-    //             success: function(data) {
-    //                 ouvrage_comm.html('<option value="">Sélectionnez une option</option>');          
-    //             $.each(data, function(index, option) {
-    //                 ouvrage_comm.append('<option value="' + option.id + '" data-ouv="' + option.nom_ouvrage + '">' + option.nom_ouvrage+ '</option>');
-    //             });          
-    //             ouvrage_comm.prop('disabled', false);
-    //             },
-    //             error: function() {
-    //                 ouvrage_comm.html('<option value="">Erreur de chargement</option>');
-    //             }
-    //         });
-    //         } else {
-    //             ouvrage_comm.html('<option value="">Sélectionnez une option</option>');
-    //             ouvrage_comm.prop('disabled', true);
-    //         }
-    //     });
-    // });
+    $(document).ready(function() {
+        $('#ouvrage_edit').change(function() {
+            let value = $(this).val();
+            let selectedOption = $(this).find('option:selected');
+            let url = '/realisations/par_ouvrage/' + value;
+            let estimation_id = $('#estimation_id');    
+            estimation_id.prop('disabled', true).html('<option value="">Chargement en cours...</option>');    
+            if (url) {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    estimation_id.html('<option value="">Sélectionnez une option</option>');          
+                $.each(data, function(index, option) {
+                    estimation_id.append('<option value="' + option.id + '" data-ouv="' + option.design + '">' + option.design+ '</option>');
+                });          
+                estimation_id.prop('disabled', false);
+                },
+                error: function() {
+                    estimation_id.html('<option value="">Erreur de chargement</option>');
+                }
+            });
+            } else {
+                estimation_id.html('<option value="">Sélectionnez une option</option>');
+                estimation_id.prop('disabled', true);
+            }
+        });
+    });
 </script>
 
 

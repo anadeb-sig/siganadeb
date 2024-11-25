@@ -180,7 +180,7 @@
                             Infrastructures
                         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse {{ Request::is('sites*') || Request::is('entreprises*') || Request::is('locations*') || Request::is('ouvrages*') || Request::is('contrats*') || Request::is('suivis*') || Request::is('typeouvrages*') || Request::is('demandejours*') || Request::is('demandes*') ? 'show' : '' }}" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                    <div class="collapse {{ Request::is('sites*') || Request::is('entreprises*') || Request::is('estimations*') || Request::is('realisations*') || Request::is('locations*') || Request::is('ouvrages*') || Request::is('contrats*') || Request::is('suivis*') || Request::is('typeouvrages*') || Request::is('demandejours*') || Request::is('demandes*') ? 'show' : '' }}" id="collapseFlows" data-bs-parent="#accordionSidenav">
                         <nav class="sidenav-menu-nested nav">
                             @can('entreprise-index')
                                 <a class="nav-link {{ Request::routeIs('entreprises.index') ? 'active' : '' }}" href="{{ route('entreprises.index') }}" data-key="t-entreprise">Entreprises</a>
@@ -196,13 +196,18 @@
                             @endcan
                             @can('ouvrage-index')    
                                 <a class="nav-link {{ Request::routeIs('contrats.index') ? 'active' : '' }}" href="{{ route('contrats.index') }}" data-key="t-contrats">Contrats</a>
-                            @endcan
+                            @endcan 
+                              
+                            <a class="nav-link {{ Request::routeIs('estimations.index') ? 'active' : '' }}" href="{{ route('estimations.index') }}" data-key="t-estimations">Données estimées</a>
+                            <a class="nav-link {{ Request::routeIs('realisations.index') ? 'active' : '' }}" href="{{ route('realisations.index') }}" data-key="t-estimations">Données réalisées</a>
+                            
                             @can('suivi-index')
                                 <a class="nav-link {{ Request::routeIs('suivis.index') ? 'active' : '' }}" href="{{ route('suivis.index') }}" data-key="t-suivis">Suivis</a>
                             @endcan
                             @can('suivi-galerie')
                                 <a class="nav-link {{ Request::routeIs('suivis.galerie') ? 'active' : '' }}" href="{{ route('suivis.galerie') }}" data-key="t-galerie">Galérie photos</a>
                             @endcan
+                            
                             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#appsCollapseKnowledgeBasee" aria-expanded="false" aria-controls="appsCollapseKnowledgeBasee">
                                 Liste de demandes
                                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>

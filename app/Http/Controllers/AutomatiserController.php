@@ -411,7 +411,7 @@ class AutomatiserController extends Controller
         DB::insert("
             INSERT INTO etat_par_beneficiaires(id,reg,pref,comm,cant,vill,projet_id,financement,nom,prenom,sexe,telephone,cardNum,montantEnv,
             montantRecu,frais,nbrTranche,montant1,frais1,montant2,frais2,montant3,frais3,montant4,frais4,montant5,frais5,montant6,frais6)
-            SELECT e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,projet_id,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM,
+            SELECT e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,e.projet_id,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM,
             SUM(p.montantR) AS montantRecu,
             (e.SommeTM-SUM(p.montantR)) AS frais,
             COUNT(p.AllocationPayNumber) nbrTranche,
@@ -429,7 +429,7 @@ class AutomatiserController extends Controller
             SUM(CASE WHEN p.AllocationPayNumber = 6 THEN p.frais ELSE 0 END) AS frais6 
             FROM etatpaiements e
             INNER JOIN ptf_villages p ON e.id = CONCAT(p.TransferNumber,';',p.CardNum)
-            GROUP BY e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,p.projet_id,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM;
+            GROUP BY e.id,p.reg_fa,p.pref_fa,p.comm_fa,p.cant_fa,p.vill_fa,e.projet_id,p.financement, e.nom,e.prenom,e.sexe, e.telephone,e.card_number,e.SommeTM;
         ");
     }
 

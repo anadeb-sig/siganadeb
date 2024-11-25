@@ -53,9 +53,7 @@
                 // Construire l'URL avec les paramètres GET
                 let url = `ouvrages/format_csv?region_id=${region_id}&commune_id=${commune_id}`;
 
-                
-                
-                console.log(url);
+            
 
                 // Créer un lien pour déclencher le téléchargement
                 const a = document.createElement('a');
